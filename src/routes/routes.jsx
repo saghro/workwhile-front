@@ -10,7 +10,7 @@ import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 
 // Pages - Correction de l'import Homepage
-import LandingPage from '../pages/Homepage';
+import LandingPage from '../pages/LandingPage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 import JobListingsPage from '../pages/JobListingsPage';
