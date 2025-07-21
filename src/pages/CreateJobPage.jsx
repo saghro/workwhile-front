@@ -1,4 +1,4 @@
-// ✅ FIXED: CreateJobPage.jsx
+// ✅ TRADUIT EN FRANÇAIS: CreateJobPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -13,28 +13,28 @@ const CreateJobPage = () => {
     const navigate = useNavigate();
     const { isAuthenticated, user } = useSelector(state => state.auth);
 
-    // ✅ FIXED: Improved form data state with better defaults
+    // ✅ TRADUIT: Données du formulaire avec de meilleurs défauts
     const [formData, setFormData] = useState({
         title: '',
         description: '',
         location: '',
-        type: 'full-time',
+        type: 'temps-plein',
         category: '',
-        experienceLevel: 'mid',
+        experienceLevel: 'intermediaire',
         salaryMin: '',
         salaryMax: '',
         salaryCurrency: 'MAD',
-        salaryPeriod: 'monthly',
+        salaryPeriod: 'mensuel',
         isRemote: false,
         skills: '',
         benefits: '',
         requirements: '',
         deadlineDate: '',
-        urgency: 'medium',
+        urgency: 'moyenne',
         tags: ''
     });
 
-    // Company creation state
+    // État de création d'entreprise
     const [showCompanyForm, setShowCompanyForm] = useState(false);
     const [companyData, setCompanyData] = useState({
         name: '',
@@ -48,7 +48,7 @@ const CreateJobPage = () => {
     });
 
     useEffect(() => {
-        // Redirect if not authenticated or not an employer
+        // Rediriger si non authentifié ou non employeur
         if (!isAuthenticated) {
             navigate('/login', { state: { from: '/create-job' } });
             return;
@@ -57,21 +57,21 @@ const CreateJobPage = () => {
         if (user?.role !== 'employer' && user?.role !== 'admin') {
             navigate('/jobs', {
                 state: {
-                    message: 'Only employers can create job offers. Please register as an employer.',
+                    message: 'Seuls les employeurs peuvent créer des offres d\'emploi. Veuillez vous inscrire en tant qu\'employeur.',
                     type: 'error'
                 }
             });
             return;
         }
 
-        // Check if user has a company
+        // Vérifier si l'utilisateur a une entreprise
         const fetchCompany = async () => {
             try {
                 const userCompany = await companyService.getMyCompany();
                 setCompany(userCompany);
                 // eslint-disable-next-line no-unused-vars
             } catch (err) {
-                console.log('No company found for user');
+                console.log('Aucune entreprise trouvée pour l\'utilisateur');
                 setShowCompanyForm(true);
             }
         };
@@ -79,7 +79,7 @@ const CreateJobPage = () => {
         fetchCompany();
     }, [isAuthenticated, user, navigate]);
 
-    // ✅ IMPROVED: Better input handler with debounced validation
+    // ✅ AMÉLIORÉ: Meilleur gestionnaire d'entrée avec validation différée
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
         const newValue = type === 'checkbox' ? checked : value;
@@ -89,7 +89,7 @@ const CreateJobPage = () => {
             [name]: newValue
         }));
 
-        // Clear errors when user starts typing
+        // Effacer les erreurs quand l'utilisateur commence à taper
         if (error && newValue !== '') {
             setError(null);
         }
@@ -103,14 +103,14 @@ const CreateJobPage = () => {
         }));
     };
 
-    // ✅ IMPROVED: Enhanced company validation
+    // ✅ AMÉLIORÉ: Validation d'entreprise améliorée
     const validateCompanyForm = () => {
         const requiredFields = {
-            name: 'Company Name',
-            industry: 'Industry',
-            size: 'Company Size',
-            location: 'Location',
-            phone: 'Phone Number'
+            name: 'Nom de l\'entreprise',
+            industry: 'Secteur d\'activité',
+            size: 'Taille de l\'entreprise',
+            location: 'Localisation',
+            phone: 'Numéro de téléphone'
         };
 
         const missingFields = [];
@@ -123,29 +123,29 @@ const CreateJobPage = () => {
         });
 
         if (missingFields.length > 0) {
-            errors.push(`Please fill in all required fields: ${missingFields.join(', ')}`);
+            errors.push(`Veuillez remplir tous les champs obligatoires : ${missingFields.join(', ')}`);
         }
 
-        // Phone validation
+        // Validation du téléphone
         const phoneRegex = /^[+]?[\d\s\-()]{10,}$/;
         if (companyData.phone && !phoneRegex.test(companyData.phone.trim())) {
-            errors.push('Please enter a valid phone number (at least 10 digits)');
+            errors.push('Veuillez saisir un numéro de téléphone valide (au moins 10 chiffres)');
         }
 
-        // Email validation (optional)
+        // Validation de l'email (optionnel)
         if (companyData.email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(companyData.email.trim())) {
-                errors.push('Please enter a valid email address');
+                errors.push('Veuillez saisir une adresse email valide');
             }
         }
 
-        // Website validation (optional)
+        // Validation du site web (optionnel)
         if (companyData.website) {
             try {
                 new URL(companyData.website);
             } catch {
-                errors.push('Please enter a valid website URL');
+                errors.push('Veuillez saisir une URL de site web valide');
             }
         }
 
@@ -173,67 +173,67 @@ const CreateJobPage = () => {
             setShowCompanyForm(false);
 
         } catch (err) {
-            setError(err.message || 'Failed to create company profile');
+            setError(err.message || 'Échec de la création du profil d\'entreprise');
         } finally {
             setLoading(false);
         }
     };
 
-    // ✅ IMPROVED: Comprehensive form validation with detailed error messages
+    // ✅ AMÉLIORÉ: Validation de formulaire complète avec messages d'erreur détaillés
     const validateForm = () => {
         const errors = [];
 
-        // Required field validation
+        // Validation des champs obligatoires
         if (!formData.title?.trim()) {
-            errors.push('Job Title is required');
+            errors.push('Le titre du poste est obligatoire');
         } else if (formData.title.trim().length < 3) {
-            errors.push('Job Title must be at least 3 characters long');
+            errors.push('Le titre du poste doit contenir au moins 3 caractères');
         }
 
         if (!formData.description?.trim()) {
-            errors.push('Job Description is required');
+            errors.push('La description du poste est obligatoire');
         } else if (formData.description.trim().length < 50) {
-            errors.push('Job Description must be at least 50 characters long');
+            errors.push('La description du poste doit contenir au moins 50 caractères');
         }
 
         if (!formData.location?.trim()) {
-            errors.push('Location is required');
+            errors.push('La localisation est obligatoire');
         } else if (formData.location.trim().length < 2) {
-            errors.push('Location must be at least 2 characters long');
+            errors.push('La localisation doit contenir au moins 2 caractères');
         }
 
         if (!formData.category?.trim()) {
-            errors.push('Category is required');
+            errors.push('La catégorie est obligatoire');
         } else if (formData.category.trim().length < 2) {
-            errors.push('Category must be at least 2 characters long');
+            errors.push('La catégorie doit contenir au moins 2 caractères');
         }
 
-        // Salary validation
+        // Validation du salaire
         if (formData.salaryMin || formData.salaryMax) {
             const minSalary = parseFloat(formData.salaryMin);
             const maxSalary = parseFloat(formData.salaryMax);
 
             if (formData.salaryMin && (isNaN(minSalary) || minSalary < 0)) {
-                errors.push('Minimum salary must be a valid positive number');
+                errors.push('Le salaire minimum doit être un nombre positif valide');
             }
 
             if (formData.salaryMax && (isNaN(maxSalary) || maxSalary < 0)) {
-                errors.push('Maximum salary must be a valid positive number');
+                errors.push('Le salaire maximum doit être un nombre positif valide');
             }
 
             if (formData.salaryMin && formData.salaryMax && minSalary >= maxSalary) {
-                errors.push('Maximum salary must be greater than minimum salary');
+                errors.push('Le salaire maximum doit être supérieur au salaire minimum');
             }
         }
 
-        // Date validation
+        // Validation de la date
         if (formData.deadlineDate) {
             const deadline = new Date(formData.deadlineDate);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
             if (deadline <= today) {
-                errors.push('Deadline must be in the future');
+                errors.push('La date limite doit être dans le futur');
             }
         }
 
@@ -246,7 +246,7 @@ const CreateJobPage = () => {
         return true;
     };
 
-    // ✅ FIXED: Improved job creation with proper data transformation
+    // ✅ CORRIGÉ: Création d'emploi améliorée avec transformation appropriée des données
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -258,7 +258,7 @@ const CreateJobPage = () => {
             setLoading(true);
             setError(null);
 
-            // ✅ FIXED: Properly structure job data for the API
+            // ✅ CORRIGÉ: Structurer correctement les données d'emploi pour l'API
             const jobData = {
                 title: formData.title.trim(),
                 description: formData.description.trim(),
@@ -270,7 +270,7 @@ const CreateJobPage = () => {
                 urgency: formData.urgency
             };
 
-            // ✅ FIXED: Proper salary handling
+            // ✅ CORRIGÉ: Gestion appropriée du salaire
             if (formData.salaryMin || formData.salaryMax) {
                 jobData.salary = {
                     currency: formData.salaryCurrency,
@@ -286,7 +286,7 @@ const CreateJobPage = () => {
                 }
             }
 
-            // ✅ FIXED: Proper array handling
+            // ✅ CORRIGÉ: Gestion appropriée des tableaux
             if (formData.skills?.trim()) {
                 jobData.skills = formData.skills
                     .split(',')
@@ -315,57 +315,57 @@ const CreateJobPage = () => {
                     .filter(t => t.length > 0);
             }
 
-            // ✅ FIXED: Proper date handling
+            // ✅ CORRIGÉ: Gestion appropriée de la date
             if (formData.deadlineDate) {
                 jobData.deadlineDate = formData.deadlineDate;
             }
 
-            // ✅ FIXED: Add company if available
+            // ✅ CORRIGÉ: Ajouter l'entreprise si disponible
             if (company?._id) {
                 jobData.company = company._id;
             }
 
-            console.log('📤 Submitting job data:', jobData);
+            console.log('📤 Soumission des données d\'emploi:', jobData);
 
             const createdJob = await jobService.createJob(jobData);
 
-            console.log('✅ Job created successfully:', createdJob);
+            console.log('✅ Emploi créé avec succès:', createdJob);
 
             setSuccess(true);
 
-            // Redirect to job details after 2 seconds
+            // Rediriger vers les détails de l'emploi après 2 secondes
             setTimeout(() => {
                 navigate(`/jobs/${createdJob._id}`, {
                     state: {
-                        message: 'Job offer created successfully!',
+                        message: 'Offre d\'emploi créée avec succès !',
                         type: 'success'
                     }
                 });
             }, 2000);
 
         } catch (err) {
-            console.error('❌ Job creation failed:', err);
-            setError(err.message || 'Failed to create job offer. Please check your input and try again.');
+            console.error('❌ Échec de la création d\'emploi:', err);
+            setError(err.message || 'Échec de la création de l\'offre d\'emploi. Veuillez vérifier vos données et réessayer.');
         } finally {
             setLoading(false);
         }
     };
 
-    // Show company creation form if needed
+    // Afficher le formulaire de création d'entreprise si nécessaire
     if (showCompanyForm) {
         return (
             <div className="max-w-2xl mx-auto px-4 mt-24 mb-16">
                 <div className="bg-white border rounded-lg shadow-sm p-6 md:p-8">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-4">Create Company Profile</h1>
+                    <h1 className="text-2xl font-bold text-gray-900 mb-4">Créer un Profil d'Entreprise</h1>
                     <p className="text-gray-600 mb-6">
-                        Before creating a job offer, you need to set up your company profile.
+                        Avant de créer une offre d'emploi, vous devez configurer votre profil d'entreprise.
                     </p>
 
                     <form onSubmit={handleCompanySubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="md:col-span-2">
                                 <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-2">
-                                    Company Name <span className="text-red-500">*</span>
+                                    Nom de l'entreprise <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -375,13 +375,13 @@ const CreateJobPage = () => {
                                     value={companyData.name}
                                     onChange={handleCompanyInputChange}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="Enter company name"
+                                    placeholder="Saisissez le nom de l'entreprise"
                                 />
                             </div>
 
                             <div>
                                 <label htmlFor="industry" className="block text-sm font-medium text-gray-700 mb-2">
-                                    Industry <span className="text-red-500">*</span>
+                                    Secteur d'activité <span className="text-red-500">*</span>
                                 </label>
                                 <select
                                     id="industry"
@@ -391,21 +391,21 @@ const CreateJobPage = () => {
                                     onChange={handleCompanyInputChange}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 >
-                                    <option value="">Select industry</option>
-                                    <option value="technology">Technology</option>
+                                    <option value="">Sélectionner un secteur</option>
+                                    <option value="technology">Technologie</option>
                                     <option value="finance">Finance</option>
-                                    <option value="healthcare">Healthcare</option>
-                                    <option value="education">Education</option>
-                                    <option value="retail">Retail</option>
-                                    <option value="manufacturing">Manufacturing</option>
-                                    <option value="consulting">Consulting</option>
-                                    <option value="other">Other</option>
+                                    <option value="healthcare">Santé</option>
+                                    <option value="education">Éducation</option>
+                                    <option value="retail">Commerce de détail</option>
+                                    <option value="manufacturing">Industrie</option>
+                                    <option value="consulting">Conseil</option>
+                                    <option value="other">Autre</option>
                                 </select>
                             </div>
 
                             <div>
                                 <label htmlFor="size" className="block text-sm font-medium text-gray-700 mb-2">
-                                    Company Size <span className="text-red-500">*</span>
+                                    Taille de l'entreprise <span className="text-red-500">*</span>
                                 </label>
                                 <select
                                     id="size"
@@ -415,19 +415,19 @@ const CreateJobPage = () => {
                                     onChange={handleCompanyInputChange}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 >
-                                    <option value="">Select size</option>
-                                    <option value="1-10">1-10 employees</option>
-                                    <option value="11-50">11-50 employees</option>
-                                    <option value="51-200">51-200 employees</option>
-                                    <option value="201-500">201-500 employees</option>
-                                    <option value="501-1000">501-1000 employees</option>
-                                    <option value="1000+">1000+ employees</option>
+                                    <option value="">Sélectionner la taille</option>
+                                    <option value="1-10">1-10 employés</option>
+                                    <option value="11-50">11-50 employés</option>
+                                    <option value="51-200">51-200 employés</option>
+                                    <option value="201-500">201-500 employés</option>
+                                    <option value="501-1000">501-1000 employés</option>
+                                    <option value="1000+">1000+ employés</option>
                                 </select>
                             </div>
 
                             <div className="md:col-span-2">
                                 <label htmlFor="companyLocation" className="block text-sm font-medium text-gray-700 mb-2">
-                                    Location <span className="text-red-500">*</span>
+                                    Localisation <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -437,13 +437,13 @@ const CreateJobPage = () => {
                                     value={companyData.location}
                                     onChange={handleCompanyInputChange}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="e.g., Casablanca, Morocco"
+                                    placeholder="ex. Casablanca, Maroc"
                                 />
                             </div>
 
                             <div>
                                 <label htmlFor="companyPhone" className="block text-sm font-medium text-gray-700 mb-2">
-                                    Phone Number <span className="text-red-500">*</span>
+                                    Numéro de téléphone <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="tel"
@@ -459,7 +459,7 @@ const CreateJobPage = () => {
 
                             <div>
                                 <label htmlFor="website" className="block text-sm font-medium text-gray-700 mb-2">
-                                    Website
+                                    Site web
                                 </label>
                                 <input
                                     type="url"
@@ -468,13 +468,13 @@ const CreateJobPage = () => {
                                     value={companyData.website}
                                     onChange={handleCompanyInputChange}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="https://yourcompany.com"
+                                    placeholder="https://votreentreprise.com"
                                 />
                             </div>
 
                             <div className="md:col-span-2">
                                 <label htmlFor="companyEmail" className="block text-sm font-medium text-gray-700 mb-2">
-                                    Company Email
+                                    Email de l'entreprise
                                 </label>
                                 <input
                                     type="email"
@@ -483,13 +483,13 @@ const CreateJobPage = () => {
                                     value={companyData.email}
                                     onChange={handleCompanyInputChange}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="contact@yourcompany.com"
+                                    placeholder="contact@votreentreprise.com"
                                 />
                             </div>
 
                             <div className="md:col-span-2">
                                 <label htmlFor="companyDescription" className="block text-sm font-medium text-gray-700 mb-2">
-                                    Company Description
+                                    Description de l'entreprise
                                 </label>
                                 <textarea
                                     id="companyDescription"
@@ -498,7 +498,7 @@ const CreateJobPage = () => {
                                     value={companyData.description}
                                     onChange={handleCompanyInputChange}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="Brief description of your company..."
+                                    placeholder="Brève description de votre entreprise..."
                                 />
                             </div>
                         </div>
@@ -515,7 +515,7 @@ const CreateJobPage = () => {
                                 onClick={() => navigate('/jobs')}
                                 className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50"
                             >
-                                Cancel
+                                Annuler
                             </button>
                             <button
                                 type="submit"
@@ -526,7 +526,7 @@ const CreateJobPage = () => {
                                         : 'bg-blue-600 hover:bg-blue-700'
                                 } text-white font-medium rounded-md`}
                             >
-                                {loading ? 'Creating...' : 'Create Company'}
+                                {loading ? 'Création...' : 'Créer l\'entreprise'}
                             </button>
                         </div>
                     </form>
@@ -545,20 +545,20 @@ const CreateJobPage = () => {
                     <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
                     </svg>
-                    Back to Jobs
+                    Retour aux emplois
                 </button>
             </div>
 
             <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
                 <div className="p-6 md:p-8 border-b">
-                    <h1 className="text-3xl font-bold text-gray-900">Create Job Offer</h1>
+                    <h1 className="text-3xl font-bold text-gray-900">Créer une Offre d'Emploi</h1>
                     <p className="mt-2 text-gray-600">
-                        Post a new job opening and find the perfect candidate for your team
+                        Publiez une nouvelle offre d'emploi et trouvez le candidat parfait pour votre équipe
                     </p>
                     {company && (
                         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
                             <p className="text-sm text-blue-800">
-                                <span className="font-medium">Posting as:</span> {company.name}
+                                <span className="font-medium">Publication au nom de :</span> {company.name}
                             </p>
                         </div>
                     )}
@@ -571,22 +571,22 @@ const CreateJobPage = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                             </svg>
                         </div>
-                        <h2 className="text-2xl font-bold text-green-600 mb-2">Job Created Successfully!</h2>
+                        <h2 className="text-2xl font-bold text-green-600 mb-2">Emploi Créé avec Succès !</h2>
                         <p className="text-gray-600">
-                            Your job offer has been published and is now live. You'll be redirected shortly...
+                            Votre offre d'emploi a été publiée et est maintenant en ligne. Vous serez redirigé sous peu...
                         </p>
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="p-6 md:p-8">
                         <div className="space-y-8">
-                            {/* Basic Information Section */}
+                            {/* Section Informations de Base */}
                             <div className="border-b border-gray-200 pb-8">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Informations de Base</h3>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="md:col-span-2">
                                         <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Job Title <span className="text-red-500">*</span>
+                                            Titre du poste <span className="text-red-500">*</span>
                                         </label>
                                         <input
                                             type="text"
@@ -596,13 +596,13 @@ const CreateJobPage = () => {
                                             value={formData.title}
                                             onChange={handleInputChange}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="e.g., Senior Full Stack Developer"
+                                            placeholder="ex. Développeur Full Stack Senior"
                                         />
                                     </div>
 
                                     <div>
                                         <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Location <span className="text-red-500">*</span>
+                                            Localisation <span className="text-red-500">*</span>
                                         </label>
                                         <input
                                             type="text"
@@ -612,13 +612,13 @@ const CreateJobPage = () => {
                                             value={formData.location}
                                             onChange={handleInputChange}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="e.g., Casablanca, Morocco"
+                                            placeholder="ex. Casablanca, Maroc"
                                         />
                                     </div>
 
                                     <div>
                                         <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Job Type
+                                            Type d'emploi
                                         </label>
                                         <select
                                             id="type"
@@ -627,17 +627,17 @@ const CreateJobPage = () => {
                                             onChange={handleInputChange}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                         >
-                                            <option value="full-time">Full-time</option>
-                                            <option value="part-time">Part-time</option>
-                                            <option value="contract">Contract</option>
+                                            <option value="temps-plein">Temps plein</option>
+                                            <option value="temps-partiel">Temps partiel</option>
+                                            <option value="contrat">Contrat</option>
                                             <option value="freelance">Freelance</option>
-                                            <option value="internship">Internship</option>
+                                            <option value="stage">Stage</option>
                                         </select>
                                     </div>
 
                                     <div>
                                         <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Category <span className="text-red-500">*</span>
+                                            Catégorie <span className="text-red-500">*</span>
                                         </label>
                                         <input
                                             type="text"
@@ -647,25 +647,25 @@ const CreateJobPage = () => {
                                             value={formData.category}
                                             onChange={handleInputChange}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="e.g., Software Development"
+                                            placeholder="ex. Développement logiciel"
                                             list="category-suggestions"
                                         />
                                         <datalist id="category-suggestions">
-                                            <option value="Software Development" />
+                                            <option value="Développement logiciel" />
                                             <option value="Marketing" />
-                                            <option value="Sales" />
-                                            <option value="Customer Service" />
+                                            <option value="Ventes" />
+                                            <option value="Service client" />
                                             <option value="Finance" />
-                                            <option value="Human Resources" />
+                                            <option value="Ressources humaines" />
                                             <option value="Design" />
-                                            <option value="Data Science" />
-                                            <option value="Project Management" />
+                                            <option value="Science des données" />
+                                            <option value="Gestion de projet" />
                                         </datalist>
                                     </div>
 
                                     <div>
                                         <label htmlFor="experienceLevel" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Experience Level
+                                            Niveau d'expérience
                                         </label>
                                         <select
                                             id="experienceLevel"
@@ -674,10 +674,10 @@ const CreateJobPage = () => {
                                             onChange={handleInputChange}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                         >
-                                            <option value="entry">Entry Level</option>
-                                            <option value="mid">Mid Level</option>
-                                            <option value="senior">Senior Level</option>
-                                            <option value="executive">Executive</option>
+                                            <option value="debutant">Débutant</option>
+                                            <option value="intermediaire">Intermédiaire</option>
+                                            <option value="senior">Senior</option>
+                                            <option value="directeur">Directeur</option>
                                         </select>
                                     </div>
 
@@ -692,16 +692,16 @@ const CreateJobPage = () => {
                                                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                                             />
                                             <label htmlFor="isRemote" className="ml-2 block text-sm text-gray-900">
-                                                Remote work available
+                                                Travail à distance disponible
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Job Description Section */}
+                            {/* Section Description du Poste */}
                             <div className="border-b border-gray-200 pb-8">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Job Description</h3>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Description du Poste</h3>
 
                                 <div>
                                     <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
@@ -715,22 +715,22 @@ const CreateJobPage = () => {
                                         value={formData.description}
                                         onChange={handleInputChange}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="Provide a detailed description of the role, responsibilities, and what you're looking for in a candidate..."
+                                        placeholder="Fournissez une description détaillée du poste, des responsabilités et de ce que vous recherchez chez un candidat..."
                                     />
                                     <p className="mt-1 text-sm text-gray-600">
-                                        {formData.description.length}/50 characters minimum
+                                        {formData.description.length}/50 caractères minimum
                                     </p>
                                 </div>
                             </div>
 
-                            {/* Salary Information */}
+                            {/* Informations Salariales */}
                             <div className="border-b border-gray-200 pb-8">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Salary Information</h3>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Informations Salariales</h3>
 
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                                     <div>
                                         <label htmlFor="salaryMin" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Minimum Salary
+                                            Salaire minimum
                                         </label>
                                         <input
                                             type="number"
@@ -741,13 +741,13 @@ const CreateJobPage = () => {
                                             value={formData.salaryMin}
                                             onChange={handleInputChange}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="e.g., 8000"
+                                            placeholder="ex. 8000"
                                         />
                                     </div>
 
                                     <div>
                                         <label htmlFor="salaryMax" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Maximum Salary
+                                            Salaire maximum
                                         </label>
                                         <input
                                             type="number"
@@ -758,13 +758,13 @@ const CreateJobPage = () => {
                                             value={formData.salaryMax}
                                             onChange={handleInputChange}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="e.g., 15000"
+                                            placeholder="ex. 15000"
                                         />
                                     </div>
 
                                     <div>
                                         <label htmlFor="salaryCurrency" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Currency
+                                            Devise
                                         </label>
                                         <select
                                             id="salaryCurrency"
@@ -782,7 +782,7 @@ const CreateJobPage = () => {
 
                                     <div>
                                         <label htmlFor="salaryPeriod" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Period
+                                            Période
                                         </label>
                                         <select
                                             id="salaryPeriod"
@@ -791,24 +791,24 @@ const CreateJobPage = () => {
                                             onChange={handleInputChange}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                         >
-                                            <option value="hourly">Hourly</option>
-                                            <option value="daily">Daily</option>
-                                            <option value="weekly">Weekly</option>
-                                            <option value="monthly">Monthly</option>
-                                            <option value="yearly">Yearly</option>
+                                            <option value="horaire">Horaire</option>
+                                            <option value="quotidien">Quotidien</option>
+                                            <option value="hebdomadaire">Hebdomadaire</option>
+                                            <option value="mensuel">Mensuel</option>
+                                            <option value="annuel">Annuel</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Requirements and Skills */}
+                            {/* Exigences et Compétences */}
                             <div className="border-b border-gray-200 pb-8">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Requirements & Skills</h3>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Exigences et Compétences</h3>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label htmlFor="skills" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Required Skills (comma separated)
+                                            Compétences requises (séparées par des virgules)
                                         </label>
                                         <textarea
                                             id="skills"
@@ -823,7 +823,7 @@ const CreateJobPage = () => {
 
                                     <div>
                                         <label htmlFor="requirements" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Requirements (one per line)
+                                            Exigences (une par ligne)
                                         </label>
                                         <textarea
                                             id="requirements"
@@ -832,14 +832,14 @@ const CreateJobPage = () => {
                                             value={formData.requirements}
                                             onChange={handleInputChange}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="Bachelor's degree in Computer Science&#10;3+ years of experience&#10;Excellent communication skills"
+                                            placeholder="Licence en informatique&#10;3+ années d'expérience&#10;Excellentes compétences en communication"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="mt-6">
                                     <label htmlFor="benefits" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Benefits (one per line)
+                                        Avantages (un par ligne)
                                     </label>
                                     <textarea
                                         id="benefits"
@@ -848,19 +848,19 @@ const CreateJobPage = () => {
                                         value={formData.benefits}
                                         onChange={handleInputChange}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="Health insurance&#10;Remote work options&#10;Professional development budget&#10;Flexible hours"
+                                        placeholder="Assurance santé&#10;Options de travail à distance&#10;Budget de développement professionnel&#10;Horaires flexibles"
                                     />
                                 </div>
                             </div>
 
-                            {/* Additional Settings */}
+                            {/* Paramètres Supplémentaires */}
                             <div className="border-b border-gray-200 pb-8">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Additional Settings</h3>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Paramètres Supplémentaires</h3>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label htmlFor="deadlineDate" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Application Deadline
+                                            Date limite de candidature
                                         </label>
                                         <input
                                             type="date"
@@ -875,7 +875,7 @@ const CreateJobPage = () => {
 
                                     <div>
                                         <label htmlFor="urgency" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Urgency
+                                            Urgence
                                         </label>
                                         <select
                                             id="urgency"
@@ -884,15 +884,15 @@ const CreateJobPage = () => {
                                             onChange={handleInputChange}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                         >
-                                            <option value="low">Low</option>
-                                            <option value="medium">Medium</option>
-                                            <option value="high">High</option>
+                                            <option value="faible">Faible</option>
+                                            <option value="moyenne">Moyenne</option>
+                                            <option value="élevée">Élevée</option>
                                         </select>
                                     </div>
 
                                     <div className="md:col-span-2">
                                         <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Tags (comma separated)
+                                            Mots-clés (séparés par des virgules)
                                         </label>
                                         <input
                                             type="text"
@@ -901,13 +901,13 @@ const CreateJobPage = () => {
                                             value={formData.tags}
                                             onChange={handleInputChange}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="senior, javascript, remote, fintech, etc."
+                                            placeholder="senior, javascript, télétravail, fintech, etc."
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Error Message */}
+                            {/* Message d'Erreur */}
                             {error && (
                                 <div className="bg-red-50 border border-red-200 rounded-md p-4">
                                     <div className="flex">
@@ -917,21 +917,21 @@ const CreateJobPage = () => {
                                             </svg>
                                         </div>
                                         <div className="ml-3">
-                                            <h3 className="text-sm font-medium text-red-800">Error creating job</h3>
+                                            <h3 className="text-sm font-medium text-red-800">Erreur lors de la création de l'emploi</h3>
                                             <p className="text-sm text-red-600 mt-1">{error}</p>
                                         </div>
                                     </div>
                                 </div>
                             )}
 
-                            {/* Submit Section */}
+                            {/* Section de Soumission */}
                             <div className="flex justify-between items-center pt-8">
                                 <button
                                     type="button"
                                     onClick={() => navigate('/jobs')}
                                     className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50"
                                 >
-                                    Cancel
+                                    Annuler
                                 </button>
 
                                 <button
@@ -949,10 +949,10 @@ const CreateJobPage = () => {
                                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                             </svg>
-                                            Creating Job...
+                                            Création de l'emploi...
                                         </>
                                     ) : (
-                                        'Publish Job'
+                                        'Publier l\'emploi'
                                     )}
                                 </button>
                             </div>

@@ -6,7 +6,7 @@ import CareerPathwaysSection from '../components/homepage/CareerPathwaysSection'
 import TestimonialsSection from '../components/homepage/TestimonialsSection';
 import CTASection from '../components/homepage/CTASection.jsx';
 
-export default function WorkWhileHomepage() {
+export default function Homepage() {
   const [isVisible, setIsVisible] = useState({});
   const sectionRefs = {
     hero: useRef(null),

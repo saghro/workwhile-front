@@ -11,7 +11,7 @@ const RegisterPage = () => {
     confirmPassword: '',
     name: '',
     username: '',
-    role: 'candidate' // Default role
+    role: 'candidate' // Rôle par défaut
   });
   const [formError, setFormError] = useState('');
 
@@ -21,16 +21,16 @@ const RegisterPage = () => {
 
   const { user, isAuthenticated, loading, error } = useSelector(state => state.auth);
 
-  // Get redirect path from location state or default to jobs page
+  // Obtenir le chemin de redirection depuis l'état de location ou par défaut vers la page emplois
   const from = location.state?.from || '/jobs';
 
   useEffect(() => {
-    // Clear any existing errors when component mounts
+    // Effacer toutes les erreurs existantes quand le composant se monte
     dispatch(clearError());
   }, [dispatch]);
 
   useEffect(() => {
-    // If user is authenticated, redirect accordingly
+    // Si l'utilisateur est authentifié, rediriger en conséquence
     if (isAuthenticated && user) {
       if (user.needsProfileSetup) {
         navigate('/profile-setup', { replace: true });
@@ -47,31 +47,31 @@ const RegisterPage = () => {
 
   const validateForm = () => {
     if (formData.password !== formData.confirmPassword) {
-      setFormError('Passwords do not match');
+      setFormError('Les mots de passe ne correspondent pas');
       return false;
     }
 
     if (formData.password.length < 6) {
-      setFormError('Password must be at least 6 characters long');
+      setFormError('Le mot de passe doit contenir au moins 6 caractères');
       return false;
     }
 
     if (!formData.name.trim()) {
-      setFormError('Full name is required');
+      setFormError('Le nom complet est requis');
       return false;
     }
 
     if (!formData.email.trim()) {
-      setFormError('Email is required');
+      setFormError('L\'adresse e-mail est requise');
       return false;
     }
 
     if (!formData.role) {
-      setFormError('Please select a role');
+      setFormError('Veuillez sélectionner un rôle');
       return false;
     }
 
-    // Clear any previous form errors
+    // Effacer les erreurs précédentes du formulaire
     setFormError('');
     return true;
   };
@@ -83,46 +83,46 @@ const RegisterPage = () => {
       return;
     }
 
-    // Create registration data object for API
+    // Créer l'objet de données d'inscription pour l'API
     const userData = {
       email: formData.email,
       password: formData.password,
       firstName: formData.name.split(' ')[0],
       lastName: formData.name.split(' ').slice(1).join(' ') || formData.name.split(' ')[0],
       username: formData.username || formData.email.split('@')[0],
-      role: formData.role // Use selected role
+      role: formData.role // Utiliser le rôle sélectionné
     };
 
     try {
       const response = await dispatch(registerUser(userData)).unwrap();
-      console.log('Registration successful:', response);
-      // Redirect based on role
+      console.log('Inscription réussie:', response);
+      // Rediriger en fonction du rôle
       if (userData.role === 'candidate') {
         navigate('/profile-setup', { replace: true });
       } else {
         navigate('/jobs', { replace: true });
       }
     } catch (err) {
-      console.error('Registration failed:', err);
-      setFormError(err.message || 'Registration failed');
+      console.error('Échec de l\'inscription:', err);
+      setFormError(err.message || 'Échec de l\'inscription');
     }
   };
 
   const roleOptions = [
-    { value: 'candidate', label: 'Job Seeker', description: 'Looking for job opportunities' },
-    { value: 'employer', label: 'Employer', description: 'Hiring talents for your company' },
+    { value: 'candidate', label: 'Chercheur d\'emploi', description: 'À la recherche d\'opportunités d\'emploi' },
+    { value: 'employer', label: 'Employeur', description: 'Recruter des talents pour votre entreprise' },
   ];
 
   return (
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create a new account
+            Créer un nouveau compte
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Already have an account?{' '}
+            Vous avez déjà un compte ?{' '}
             <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-              Sign in
+              Se connecter
             </Link>
           </p>
         </div>
@@ -136,10 +136,10 @@ const RegisterPage = () => {
             )}
 
             <form className="space-y-6" onSubmit={handleSubmit}>
-              {/* Role Selection */}
+              {/* Sélection du rôle */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  I want to join as:
+                  Je souhaite m'inscrire en tant que :
                 </label>
                 <div className="space-y-3">
                   {roleOptions.map((option) => (
@@ -163,10 +163,10 @@ const RegisterPage = () => {
                 </div>
               </div>
 
-              {/* Full Name */}
+              {/* Nom complet */}
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Full Name
+                  Nom complet
                 </label>
                 <div className="mt-1">
                   <input
@@ -178,15 +178,15 @@ const RegisterPage = () => {
                       value={formData.name}
                       onChange={handleChange}
                       className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-full shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                      placeholder="Enter your full name"
+                      placeholder="Entrez votre nom complet"
                   />
                 </div>
               </div>
 
-              {/* Username */}
+              {/* Nom d'utilisateur */}
               <div>
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                  Username (optional)
+                  Nom d'utilisateur (optionnel)
                 </label>
                 <div className="mt-1">
                   <input
@@ -197,18 +197,18 @@ const RegisterPage = () => {
                       value={formData.username}
                       onChange={handleChange}
                       className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-full shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                      placeholder="Choose a username"
+                      placeholder="Choisissez un nom d'utilisateur"
                   />
                 </div>
                 <p className="mt-1 text-xs text-gray-500">
-                  If left blank, username will be created from your email.
+                  Si laissé vide, le nom d'utilisateur sera créé à partir de votre e-mail.
                 </p>
               </div>
 
-              {/* Email */}
+              {/* E-mail */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email address
+                  Adresse e-mail
                 </label>
                 <div className="mt-1">
                   <input
@@ -220,15 +220,15 @@ const RegisterPage = () => {
                       value={formData.email}
                       onChange={handleChange}
                       className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-full shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                      placeholder="Enter your email"
+                      placeholder="Entrez votre adresse e-mail"
                   />
                 </div>
               </div>
 
-              {/* Password */}
+              {/* Mot de passe */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
+                  Mot de passe
                 </label>
                 <div className="mt-1">
                   <input
@@ -240,18 +240,18 @@ const RegisterPage = () => {
                       value={formData.password}
                       onChange={handleChange}
                       className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-full shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                      placeholder="Create a password"
+                      placeholder="Créez un mot de passe"
                   />
                 </div>
                 <p className="mt-1 text-xs text-gray-500">
-                  Password must be at least 6 characters long.
+                  Le mot de passe doit contenir au moins 6 caractères.
                 </p>
               </div>
 
-              {/* Confirm Password */}
+              {/* Confirmer le mot de passe */}
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                  Confirm Password
+                  Confirmer le mot de passe
                 </label>
                 <div className="mt-1">
                   <input
@@ -263,12 +263,12 @@ const RegisterPage = () => {
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-full shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                      placeholder="Confirm your password"
+                      placeholder="Confirmez votre mot de passe"
                   />
                 </div>
               </div>
 
-              {/* Submit Button */}
+              {/* Bouton de soumission */}
               <div>
                 <button
                     type="submit"
@@ -283,22 +283,22 @@ const RegisterPage = () => {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        Creating account...
+                        Création du compte...
                       </>
                   ) : (
-                      `Create ${formData.role === 'employer' ? 'Employer' : 'Job Seeker'} Account`
+                      `Créer un compte ${formData.role === 'employer' ? 'Employeur' : 'Chercheur d\'emploi'}`
                   )}
                 </button>
               </div>
             </form>
 
-            {/* Terms and Privacy */}
+            {/* Conditions d'utilisation et confidentialité */}
             <div className="mt-6">
               <p className="text-xs text-gray-500 text-center">
-                By creating an account, you agree to our{' '}
-                <a href="#" className="text-blue-600 hover:text-blue-500">Terms of Service</a>
-                {' '}and{' '}
-                <a href="#" className="text-blue-600 hover:text-blue-500">Privacy Policy</a>
+                En créant un compte, vous acceptez nos{' '}
+                <a href="#" className="text-blue-600 hover:text-blue-500">Conditions d'utilisation</a>
+                {' '}et notre{' '}
+                <a href="#" className="text-blue-600 hover:text-blue-500">Politique de confidentialité</a>
               </p>
             </div>
           </div>

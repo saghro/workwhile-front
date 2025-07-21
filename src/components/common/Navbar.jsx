@@ -14,7 +14,7 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const dropdownRef = useRef(null);
 
-  // Close dropdown when clicking outside
+  // Fermer le dropdown en cliquant à l'extérieur
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -50,7 +50,7 @@ export default function Navbar() {
       navigate('/register', {
         state: {
           switchToEmployer: true,
-          message: 'To create job offers, please register as an employer or switch your account type.'
+          message: 'Pour créer des offres d\'emploi, veuillez vous inscrire en tant qu\'employeur ou changer le type de votre compte.'
         }
       });
     } else {
@@ -60,10 +60,10 @@ export default function Navbar() {
 
   return (
       <div className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200">
-        {/* White background with very subtle shadow */}
+        {/* Arrière-plan blanc avec ombre très subtile */}
         <div className="absolute inset-0 bg-white shadow-sm"></div>
 
-        {/* Navbar content */}
+        {/* Contenu de la navbar */}
         <nav className="relative">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between h-16">
@@ -74,33 +74,33 @@ export default function Navbar() {
                 </Link>
               </div>
 
-              {/* Main navigation - hidden on mobile */}
+              {/* Navigation principale - masquée sur mobile */}
               <div className="hidden md:flex flex-1 mx-8 space-x-6">
                 <Link to="/jobs" className="text-gray-700 font-medium hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 py-5">
-                  Find jobs
+                  Rechercher un emploi
                 </Link>
                 <Link to="/companies" className="text-gray-700 font-medium hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 py-5">
-                  Company reviews
+                  Avis d'entreprises
                 </Link>
                 <Link to="/salaries" className="text-gray-700 font-medium hover:text-blue-600 border-b-2 border-transparent hover:border-blue-600 py-5">
-                  Salary guide
+                  Guide des salaires
                 </Link>
               </div>
 
-              {/* Right side links and icons */}
+              {/* Liens et icônes du côté droit */}
               <div className="flex items-center space-x-5">
-                {/* Saved jobs - only for authenticated candidates */}
+                {/* Emplois sauvegardés - seulement pour les candidats authentifiés */}
                 {isAuthenticated && user?.role === 'candidate' && (
                     <Link
                         to="/saved-jobs"
                         className="hidden sm:flex items-center text-gray-700 hover:text-blue-600"
                     >
                       <Heart size={18} className="mr-1" />
-                      <span className="hidden sm:inline">Saved jobs</span>
+                      <span className="hidden sm:inline">Emplois sauvés</span>
                     </Link>
                 )}
 
-                {/* Conditional notifications icon - only when logged in */}
+                {/* Icône de notifications conditionnelle - seulement quand connecté */}
                 {isAuthenticated && (
                     <Link
                         to="/notifications"
@@ -111,14 +111,14 @@ export default function Navbar() {
                     </Link>
                 )}
 
-                {/* User Profile/Login */}
+                {/* Profil utilisateur/Connexion */}
                 <div className="relative" ref={dropdownRef}>
                   {isAuthenticated ? (
                       <>
                         <button
                             onClick={toggleProfileDropdown}
                             className="flex items-center justify-center"
-                            aria-label="User profile"
+                            aria-label="Profil utilisateur"
                             aria-expanded={isProfileOpen}
                         >
                           <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center">
@@ -128,17 +128,17 @@ export default function Navbar() {
                         {isProfileOpen && (
                             <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
                               <div className="px-4 py-2 text-sm text-gray-700">
-                                Signed in as <span className="font-medium">
+                                Connecté en tant que <span className="font-medium">
                             {user?.firstName && user?.lastName
                                 ? `${user.firstName} ${user.lastName}`
                                 : user?.email
                             }
                           </span>
-                                <div className="text-xs text-gray-500 capitalize">{user?.role}</div>
+                                <div className="text-xs text-gray-500 capitalize">{user?.role === 'candidate' ? 'Candidat' : user?.role === 'employer' ? 'Employeur' : user?.role}</div>
                               </div>
                               <hr className="border-gray-200" />
 
-                              {/* Role-specific menu items */}
+                              {/* Éléments de menu spécifiques au rôle */}
                               {user?.role === 'employer' && (
                                   <>
                                     <Link
@@ -146,14 +146,14 @@ export default function Navbar() {
                                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                         onClick={() => setIsProfileOpen(false)}
                                     >
-                                      Create Job Offer
+                                      Créer une offre d'emploi
                                     </Link>
                                     <Link
                                         to="/dashboard"
                                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                         onClick={() => setIsProfileOpen(false)}
                                     >
-                                      My Job Offers
+                                      Mes offres d'emploi
                                     </Link>
                                   </>
                               )}
@@ -165,14 +165,14 @@ export default function Navbar() {
                                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                         onClick={() => setIsProfileOpen(false)}
                                     >
-                                      My Applications
+                                      Mes candidatures
                                     </Link>
                                     <Link
                                         to="/saved-jobs"
                                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                         onClick={() => setIsProfileOpen(false)}
                                     >
-                                      Saved Jobs
+                                      Emplois sauvés
                                     </Link>
                                   </>
                               )}
@@ -182,20 +182,20 @@ export default function Navbar() {
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                   onClick={() => setIsProfileOpen(false)}
                               >
-                                Profile Settings
+                                Paramètres du profil
                               </Link>
                               <Link
                                   to="/dashboard"
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                   onClick={() => setIsProfileOpen(false)}
                               >
-                                Dashboard
+                                Tableau de bord
                               </Link>
                               <button
                                   onClick={handleLogout}
                                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                               >
-                                Sign out
+                                Se déconnecter
                               </button>
                             </div>
                         )}
@@ -204,7 +204,7 @@ export default function Navbar() {
                       <Link
                           to="/login"
                           className="flex items-center justify-center"
-                          aria-label="Login"
+                          aria-label="Connexion"
                       >
                         <div className="w-8 h-8 rounded-full border border-gray-300 bg-gray-100 flex items-center justify-center">
                           <User size={18} className="text-gray-600" />
@@ -213,19 +213,19 @@ export default function Navbar() {
                   )}
                 </div>
 
-                {/* Create Job Offer Button */}
+                {/* Bouton Créer une offre d'emploi */}
                 <button
                     onClick={handleCreateJobClick}
                     className="hidden sm:block text-sm text-blue-600 font-medium hover:text-blue-800"
                 >
-                  Create a job offer
+                  Créer une offre d'emploi
                 </button>
 
-                {/* Mobile menu button */}
+                {/* Bouton menu mobile */}
                 <button
                     className="md:hidden flex items-center justify-center"
                     onClick={toggleMobileMenu}
-                    aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+                    aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
                 >
                   {isMobileMenuOpen ? (
                       <X size={24} className="text-gray-600" />
@@ -237,7 +237,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Mobile menu */}
+          {/* Menu mobile */}
           {isMobileMenuOpen && (
               <div className="md:hidden bg-white shadow-lg absolute top-16 left-0 right-0 z-30">
                 <div className="px-2 pt-2 pb-3 space-y-1">
@@ -246,24 +246,24 @@ export default function Navbar() {
                       className="block px-3 py-2 rounded-md text-gray-700 font-medium hover:bg-gray-100"
                       onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Find jobs
+                    Rechercher un emploi
                   </Link>
                   <Link
                       to="/companies"
                       className="block px-3 py-2 rounded-md text-gray-700 font-medium hover:bg-gray-100"
                       onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Company reviews
+                    Avis d'entreprises
                   </Link>
                   <Link
                       to="/salaries"
                       className="block px-3 py-2 rounded-md text-gray-700 font-medium hover:bg-gray-100"
                       onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    Salary guide
+                    Guide des salaires
                   </Link>
 
-                  {/* Mobile-only links for authenticated users */}
+                  {/* Liens mobile uniquement pour les utilisateurs authentifiés */}
                   {isAuthenticated && (
                       <>
                         {user?.role === 'candidate' && (
@@ -273,14 +273,14 @@ export default function Navbar() {
                                   className="block px-3 py-2 rounded-md text-gray-700 font-medium hover:bg-gray-100"
                                   onClick={() => setIsMobileMenuOpen(false)}
                               >
-                                Saved jobs
+                                Emplois sauvés
                               </Link>
                               <Link
                                   to="/my-applications"
                                   className="block px-3 py-2 rounded-md text-gray-700 font-medium hover:bg-gray-100"
                                   onClick={() => setIsMobileMenuOpen(false)}
                               >
-                                My Applications
+                                Mes candidatures
                               </Link>
                             </>
                         )}
@@ -292,14 +292,14 @@ export default function Navbar() {
                                   className="block px-3 py-2 rounded-md text-gray-700 font-medium hover:bg-gray-100"
                                   onClick={() => setIsMobileMenuOpen(false)}
                               >
-                                Create Job Offer
+                                Créer une offre d'emploi
                               </Link>
                               <Link
                                   to="/dashboard"
                                   className="block px-3 py-2 rounded-md text-gray-700 font-medium hover:bg-gray-100"
                                   onClick={() => setIsMobileMenuOpen(false)}
                               >
-                                My Job Offers
+                                Mes offres d'emploi
                               </Link>
                             </>
                         )}
@@ -316,14 +316,14 @@ export default function Navbar() {
                             className="block px-3 py-2 rounded-md text-gray-700 font-medium hover:bg-gray-100"
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
-                          Profile Settings
+                          Paramètres du profil
                         </Link>
                         <Link
                             to="/dashboard"
                             className="block px-3 py-2 rounded-md text-gray-700 font-medium hover:bg-gray-100"
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
-                          Dashboard
+                          Tableau de bord
                         </Link>
                         <button
                             onClick={(e) => {
@@ -332,12 +332,12 @@ export default function Navbar() {
                             }}
                             className="block w-full text-left px-3 py-2 rounded-md text-gray-700 font-medium hover:bg-gray-100"
                         >
-                          Sign out
+                          Se déconnecter
                         </button>
                       </>
                   )}
 
-                  {/* Create job offer button for mobile */}
+                  {/* Bouton créer une offre d'emploi pour mobile */}
                   <button
                       onClick={() => {
                         handleCreateJobClick();
@@ -345,7 +345,7 @@ export default function Navbar() {
                       }}
                       className="block w-full text-left px-3 py-2 rounded-md text-blue-600 font-medium hover:bg-blue-50"
                   >
-                    Create a job offer
+                    Créer une offre d'emploi
                   </button>
                 </div>
               </div>
