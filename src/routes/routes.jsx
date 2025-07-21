@@ -10,7 +10,7 @@ import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 
 // Pages - Correction de l'import Homepage
-import HomePage from '../pages/Homepage.jsx';
+import Homepage from '../pages/Homepage.jsx';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 import JobListingsPage from '../pages/JobListingsPage';
@@ -163,7 +163,7 @@ const AppContent = () => {
                         path="/"
                         element={
                             <PublicRoute>
-                                <HomePage />
+                                <Homepage />
                             </PublicRoute>
                         }
                     />
