@@ -11,7 +11,7 @@ import Footer from '../components/common/Footer';
 
 // Pages - Correction de l'import Homepage
 import LandingPage from '../pages/LandingPage';
-import LoginPage from '../pages/LoginPage';
+import Loginpage from '../pages/Loginpage';
 import RegisterPage from '../pages/RegisterPage';
 import JobListingsPage from '../pages/JobListingsPage';
 import JobDetailsPage from '../pages/JobDetailsPage';
@@ -209,7 +209,7 @@ const AppContent = () => {
                         path="/login"
                         element={
                             <AuthRedirect>
-                                <LoginPage />
+                                <Loginpage />
                             </AuthRedirect>
                         }
                     />
