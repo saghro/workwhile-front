@@ -12,7 +12,7 @@ export default function Footer() {
       >
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-bold text-white mb-3">WorkWhile</h3>
+            <h3 className="font-bold text-white mb-3">TrouveTonJob</h3>
             <ul className="space-y-2">
               <li><Link to="/about" className="hover:text-yellow-200 transition">À propos</Link></li>
               <li><Link to="/mission" className="hover:text-yellow-200 transition">Notre mission</Link></li>
@@ -49,7 +49,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="max-w-6xl mx-auto mt-12 pt-8 border-t border-gray-700 text-center">
-          <p className="text-gray-400">© 2025 WorkWhile. Tous droits réservés.</p>
+          <p className="text-gray-400">© 2025 TrouveTonJob. Tous droits réservés.</p>
         </div>
       </footer>
   );

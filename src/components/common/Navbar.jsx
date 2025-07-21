@@ -4,7 +4,7 @@ import { User, Bell, Heart, Menu, X } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../../redux/slices/authActions';
-import logo from '../../assets/imgs/workwhile.png';
+import logo from '../../../public/logo_job.png';
 
 export default function Navbar() {
   const { user, isAuthenticated, loading } = useSelector(state => state.auth);
@@ -70,7 +70,7 @@ export default function Navbar() {
               {/* Logo */}
               <div className="flex items-center">
                 <Link to="/">
-                  <img src={logo} alt="Workwhile Logo" className="h-8 w-auto" />
+                  <img src={logo} alt="Workwhile Logo" className="h-50 w-auto" />
                 </Link>
               </div>
 

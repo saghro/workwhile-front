@@ -2,7 +2,7 @@
 // HeroSection.jsx - Version Française
 import { useState, useEffect, forwardRef } from 'react';
 import { Search, ChevronDown } from 'lucide-react';
-import workwhileLogo from '../../assets/imgs/workwhile.png';
+import workwhileLogo from '../../../public/logo_job.png';
 
 // URLs des logos d'entreprises
 const partnerLogos = [
@@ -51,7 +51,7 @@ const HeroSection = forwardRef((props, ref) => {
           <div className="absolute inset-0 rounded-full opacity-10 blur-3xl transform scale-125 translate-x-6" style={{ backgroundColor: '#EDC418' }}></div>
 
           <div className="relative p-6 flex items-center justify-center">
-            <img src={workwhileLogo} alt="Logo Workwhile" className="h-24 sm:h-28 md:h-32 object-contain" />
+            <img src={workwhileLogo} alt="Logo Workwhile" className="h-50 sm:h-28 md:h-100 object-contain" />
           </div>
         </div>
 

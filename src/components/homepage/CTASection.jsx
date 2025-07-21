@@ -17,7 +17,7 @@ const CTASection = forwardRef(({ isVisible }, ref) => {
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">Prêt à Lancer Votre Carrière ?</h2>
-            <p className="text-xl text-yellow-800 mb-8 max-w-2xl mx-auto">Rejoignez des milliers de jeunes professionnels qui ont trouvé leur voie avec WorkWhile. Votre parcours commence maintenant.</p>
+            <p className="text-xl text-yellow-800 mb-8 max-w-2xl mx-auto">Rejoignez des milliers de jeunes professionnels qui ont trouvé leur voie avec TrouveTonJob. Votre parcours commence maintenant.</p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <button className="px-8 py-3 rounded-full text-white font-medium shadow-lg transition transform hover:scale-105" style={{ backgroundColor: '#3c78e6' }}>
                 Commencer Aujourd'hui
