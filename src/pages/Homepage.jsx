@@ -7,7 +7,7 @@ import TestimonialsSection from '../components/homepage/TestimonialsSection';
 import CTASection from '../components/homepage/CTASection.jsx';
 
 // Changement du nom de la fonction pour correspondre à l'import dans routes.jsx
-export default function HomePage() {
+export default function LandingPage() {
   const [isVisible, setIsVisible] = useState({});
   const sectionRefs = {
     hero: useRef(null),
