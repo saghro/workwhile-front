@@ -5,9 +5,12 @@ import axios from 'axios';
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    // Ajouter le header pour contourner l'avertissement ngrok
+    'ngrok-skip-browser-warning': 'true'
   },
-  timeout: 10000 // 10 seconds timeout
+  timeout: 10000, // 10 seconds timeout
+  withCredentials: true // Important pour les cookies si utilisés
 });
 
 // Define all API endpoints
@@ -54,7 +57,9 @@ export const API_ENDPOINTS = {
     UPDATE_COMPANY: '/companies/my',
     GET_COMPANIES: '/companies',
     GET_COMPANY: (id) => `/companies/${id}`
-  }
+  },
+  // Nouvel endpoint pour tester la connexion
+  HEALTH: '/health'
 };
 
 // Add a request interceptor to add auth token to every request
@@ -65,13 +70,20 @@ apiClient.interceptors.request.use(
         config.headers['Authorization'] = `Bearer ${token}`;
       }
 
+      // Toujours ajouter le header ngrok pour éviter les avertissements
+      config.headers['ngrok-skip-browser-warning'] = 'true';
+
       // Log the request for debugging
-      console.log(`🚀 ${config.method?.toUpperCase()} ${config.url}`, config.data || '');
+      const baseURL = config.baseURL || '';
+      const url = config.url || '';
+      const fullURL = url.startsWith('http') ? url : `${baseURL}${url}`;
+
+      console.log(`🚀 ${config.method?.toUpperCase()} ${fullURL}`, config.data || '');
 
       return config;
     },
     (error) => {
-      console.error('Request interceptor error:', error);
+      console.error('❌ Request interceptor error:', error);
       return Promise.reject(error);
     }
 );
@@ -80,14 +92,38 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     (response) => {
       // Log successful responses
-      console.log(`✅ ${response.config.method?.toUpperCase()} ${response.config.url}`, response.data);
+      const baseURL = response.config.baseURL || '';
+      const url = response.config.url || '';
+      const fullURL = url.startsWith('http') ? url : `${baseURL}${url}`;
+
+      console.log(`✅ ${response.config.method?.toUpperCase()} ${fullURL}`, response.data);
       return response;
     },
     async (error) => {
       const originalRequest = error.config;
 
-      // Log error responses
-      console.error(`❌ ${error.config?.method?.toUpperCase()} ${error.config?.url}`, error.response?.data);
+      // Log error responses avec plus de détails
+      if (error.config) {
+        const baseURL = error.config.baseURL || '';
+        const url = error.config.url || '';
+        const fullURL = url.startsWith('http') ? url : `${baseURL}${url}`;
+
+        console.error(`❌ ${error.config?.method?.toUpperCase()} ${fullURL}`, {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          message: error.message
+        });
+      }
+
+      // Handle network errors (important pour ngrok)
+      if (error.code === 'NETWORK_ERROR' || error.message === 'Network Error') {
+        console.error('🌐 Network Error - Vérifiez que ngrok fonctionne et que l\'URL est correcte');
+        return Promise.reject({
+          ...error,
+          message: 'Erreur de connexion au serveur. Vérifiez que le backend est accessible.'
+        });
+      }
 
       // Handle 401 Unauthorized errors
       if (error.response?.status === 401 && !originalRequest._retry) {
@@ -121,7 +157,7 @@ export const handleApiError = (error) => {
     // Request was made but no response received
     return {
       status: 0,
-      message: 'Network error - please check your connection',
+      message: 'Network error - please check your connection and ensure the backend is running',
       errors: []
     };
   } else {
@@ -132,6 +168,31 @@ export const handleApiError = (error) => {
       errors: []
     };
   }
+};
+
+// Helper function to test API connection
+export const testApiConnection = async () => {
+  try {
+    console.log('🔍 Testing API connection...');
+    const response = await apiClient.get(API_ENDPOINTS.HEALTH);
+    console.log('✅ API Connection successful!', response.data);
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('❌ API Connection failed:', error);
+    const errorInfo = handleApiError(error);
+    return { success: false, error: errorInfo };
+  }
+};
+
+// Helper to get current API base URL
+export const getApiBaseUrl = () => {
+  return apiClient.defaults.baseURL;
+};
+
+// Helper to update base URL (utile si l'URL ngrok change)
+export const updateApiBaseUrl = (newBaseUrl) => {
+  apiClient.defaults.baseURL = newBaseUrl;
+  console.log(`🔄 API Base URL updated to: ${newBaseUrl}`);
 };
 
 export default apiClient;
