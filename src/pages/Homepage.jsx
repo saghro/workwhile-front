@@ -24,12 +24,12 @@ export default function WorkWhileHomepage() {
     Object.entries(sectionRefs).forEach(([key, ref]) => {
       if (ref.current) {
         const observer = new IntersectionObserver(
-            ([entry]) => {
-              if (entry.isIntersecting) {
-                setIsVisible(prev => ({ ...prev, [key]: true }));
-              }
-            },
-            { threshold: 0.1 }
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              setIsVisible(prev => ({ ...prev, [key]: true }));
+            }
+          },
+          { threshold: 0.1 }
         );
 
         observer.observe(ref.current);
@@ -45,15 +45,15 @@ export default function WorkWhileHomepage() {
   }, []);
 
   return (
-      <div className="relative overflow-hidden">
-        <div className="min-h-screen">
-          <HeroSection ref={sectionRefs.hero} />
-          <FeaturesSection ref={sectionRefs.features} isVisible={isVisible.features} />
-          <StatisticsSection ref={sectionRefs.statistics} isVisible={isVisible.statistics} />
-          <CareerPathwaysSection ref={sectionRefs.pathways} isVisible={isVisible.pathways} />
-          <TestimonialsSection ref={sectionRefs.testimonials} isVisible={isVisible.testimonials} />
-          <CTASection ref={sectionRefs.cta} isVisible={isVisible.cta} />
-        </div>
+    <div className="relative overflow-hidden">
+      <div className="min-h-screen">
+        <HeroSection ref={sectionRefs.hero} />
+        <FeaturesSection ref={sectionRefs.features} isVisible={isVisible.features} />
+        <StatisticsSection ref={sectionRefs.statistics} isVisible={isVisible.statistics} />
+        <CareerPathwaysSection ref={sectionRefs.pathways} isVisible={isVisible.pathways} />
+        <TestimonialsSection ref={sectionRefs.testimonials} isVisible={isVisible.testimonials} />
+        <CTASection ref={sectionRefs.cta} isVisible={isVisible.cta} />
       </div>
+    </div>
   );
 }

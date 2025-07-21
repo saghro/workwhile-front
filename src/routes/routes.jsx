@@ -10,7 +10,7 @@ import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 
 // Pages
-import HomePage from '../pages/HomePage';
+import HomePage from '../pages/Homepage.jsx';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 import JobListingsPage from '../pages/JobListingsPage';
