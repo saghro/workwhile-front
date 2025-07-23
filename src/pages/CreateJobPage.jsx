@@ -794,7 +794,7 @@ const CreateJobPage = () => {
                                             <option value="horaire">Horaire</option>
                                             <option value="quotidien">Quotidien</option>
                                             <option value="hebdomadaire">Hebdomadaire</option>
-                                            <option value="mensuel">Mensuel</option>
+                                            <option value="mensuel">monthly</option>
                                             <option value="annuel">Annuel</option>
                                         </select>
                                     </div>
