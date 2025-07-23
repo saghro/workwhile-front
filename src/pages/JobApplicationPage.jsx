@@ -1,6 +1,3 @@
-// Enhanced Job Application Component with Better Error Handling
-// src/components/JobApplicationPage.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -12,9 +9,6 @@ const JobApplicationPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  const [debugMode, setDebugMode] = useState(false);
-  const [validationErrors, setValidationErrors] = useState([]);
-
   const [formData, setFormData] = useState({
     // Personal Information
     firstName: '',
@@ -62,16 +56,14 @@ const JobApplicationPage = () => {
       try {
         setLoading(true);
         setError(null);
-        console.log('🔍 Fetching job data for application page...');
 
         // Fetch job details
         const jobData = await jobService.getJobById(id);
-        console.log('✅ Fetched job for application:', jobData?.title);
+        console.log('Fetched job for application:', jobData);
         setJob(jobData);
 
         // Pre-fill user data if available
         if (user) {
-          console.log('👤 Pre-filling form with user data');
           setFormData(prev => ({
             ...prev,
             firstName: user.firstName || '',
@@ -86,11 +78,9 @@ const JobApplicationPage = () => {
 
         // Check if user has already applied
         if (isAuthenticated && user && user.role === 'candidate') {
-          console.log('🔍 Checking if user already applied...');
           const hasApplied = await applicationService.hasAppliedToJob(id);
 
           if (hasApplied) {
-            console.log('⚠️ User has already applied to this job');
             navigate(`/jobs/${id}`, {
               state: { message: 'You have already applied to this job.' }
             });
@@ -98,8 +88,8 @@ const JobApplicationPage = () => {
           }
         }
       } catch (err) {
-        console.error('❌ Error fetching job or checking application:', err);
         setError(err.message || 'Failed to fetch job details');
+        console.error('Error:', err);
       } finally {
         setLoading(false);
       }
@@ -114,11 +104,6 @@ const JobApplicationPage = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-
-    // Clear validation errors when user starts typing
-    if (validationErrors.length > 0) {
-      setValidationErrors([]);
-    }
   };
 
   const handleFileChange = (e) => {
@@ -126,8 +111,6 @@ const JobApplicationPage = () => {
     const file = files[0];
 
     if (file) {
-      console.log(`📁 File selected for ${name}:`, file.name, file.size, 'bytes');
-
       // Validate file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         setError(`${name} file size must be less than 5MB`);
@@ -158,12 +141,10 @@ const JobApplicationPage = () => {
 
       // Clear any previous errors
       setError(null);
-      console.log(`✅ File validated and added: ${file.name}`);
     }
   };
 
   const removeFile = (fieldName) => {
-    console.log(`🗑️ Removing file: ${fieldName}`);
     setFormData(prev => ({
       ...prev,
       [fieldName]: null
@@ -176,7 +157,6 @@ const JobApplicationPage = () => {
   };
 
   const validateForm = () => {
-    console.log('🔍 Validating form...');
     const requiredFields = {
       firstName: 'First Name',
       lastName: 'Last Name',
@@ -186,7 +166,6 @@ const JobApplicationPage = () => {
     };
 
     const missingFields = [];
-    const errors = [];
 
     Object.entries(requiredFields).forEach(([field, label]) => {
       if (!formData[field]) {
@@ -195,103 +174,30 @@ const JobApplicationPage = () => {
     });
 
     if (missingFields.length > 0) {
-      errors.push(`Missing required fields: ${missingFields.join(', ')}`);
+      setError(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      return false;
     }
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (formData.email && !emailRegex.test(formData.email)) {
-      errors.push('Please enter a valid email address');
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      return false;
     }
 
     // Validate cover letter minimum length
     if (formData.coverLetter && formData.coverLetter.length < 50) {
-      errors.push('Cover letter should be at least 50 characters long');
-    }
-
-    // Validate file
-    if (formData.resume && !(formData.resume instanceof File)) {
-      errors.push('Resume must be a valid file');
-    }
-
-    setValidationErrors(errors);
-
-    if (errors.length > 0) {
-      console.error('❌ Form validation failed:', errors);
-      setError(`Validation failed: ${errors.join(', ')}`);
+      setError('Cover letter should be at least 50 characters long');
       return false;
     }
 
-    console.log('✅ Form validation passed');
     return true;
-  };
-
-  const prepareApplicationData = () => {
-    console.log('📦 Preparing application data...');
-
-    // Create FormData for file upload
-    const applicationData = new FormData();
-
-    // Basic application data
-    applicationData.append('jobId', id);
-
-    if (formData.coverLetter?.trim()) {
-      applicationData.append('coverLetter', formData.coverLetter.trim());
-    }
-
-    // Optional fields
-    if (formData.expectedSalary && !isNaN(formData.expectedSalary) && formData.expectedSalary > 0) {
-      applicationData.append('expectedSalary', Number(formData.expectedSalary));
-    }
-    if (formData.availableFrom) {
-      applicationData.append('availableFrom', formData.availableFrom);
-    }
-
-    // Personal information as JSON string
-    const personalInfo = {
-      firstName: formData.firstName.trim(),
-      lastName: formData.lastName.trim(),
-      email: formData.email.trim(),
-      phone: formData.phone.trim(),
-      currentPosition: formData.currentPosition.trim(),
-      totalExperience: formData.totalExperience,
-      education: formData.education,
-      university: formData.university.trim(),
-      graduationYear: formData.graduationYear,
-      skills: formData.skills.trim(),
-      linkedin: formData.linkedin.trim(),
-      website: formData.website.trim(),
-      references: formData.references.trim(),
-      motivation: formData.motivation.trim(),
-      relocate: formData.relocate,
-      remoteWork: formData.remoteWork
-    };
-
-    applicationData.append('personalInfo', JSON.stringify(personalInfo));
-
-    // Files
-    if (formData.resume) {
-      applicationData.append('resume', formData.resume);
-      console.log('📄 Resume attached:', formData.resume.name);
-    }
-    if (formData.portfolio) {
-      applicationData.append('portfolio', formData.portfolio);
-      console.log('📁 Portfolio attached:', formData.portfolio.name);
-    }
-
-    if (debugMode) {
-      applicationService.debugFormData(applicationData);
-    }
-
-    return applicationData;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('🚀 Starting application submission...');
 
     if (!isAuthenticated || !user) {
-      console.log('⚠️ User not authenticated, redirecting to login');
       navigate('/login', { state: { from: `/jobs/${id}/apply` } });
       return;
     }
@@ -302,31 +208,69 @@ const JobApplicationPage = () => {
     }
 
     if (!validateForm()) {
-      console.log('❌ Form validation failed, stopping submission');
       return;
     }
 
     try {
       setSubmitting(true);
       setError(null);
-      setValidationErrors([]);
 
-      console.log('📦 Preparing application data...');
-      const applicationData = prepareApplicationData();
+      // Create FormData for file upload
+      const applicationData = new FormData();
 
-      // Client-side validation using the service
-      console.log('🔍 Running service validation...');
+      // Basic application data
+      applicationData.append('jobId', id);
+      applicationData.append('coverLetter', formData.coverLetter.trim());
+
+      // Optional fields
+      if (formData.expectedSalary) {
+        applicationData.append('expectedSalary', Number(formData.expectedSalary));
+      }
+      if (formData.availableFrom) {
+        applicationData.append('availableFrom', formData.availableFrom);
+      }
+
+      // Personal information as JSON string
+      const personalInfo = {
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        currentPosition: formData.currentPosition.trim(),
+        totalExperience: formData.totalExperience,
+        education: formData.education,
+        university: formData.university.trim(),
+        graduationYear: formData.graduationYear,
+        skills: formData.skills.trim(),
+        linkedin: formData.linkedin.trim(),
+        website: formData.website.trim(),
+        references: formData.references.trim(),
+        motivation: formData.motivation.trim(),
+        relocate: formData.relocate,
+        remoteWork: formData.remoteWork
+      };
+
+      applicationData.append('personalInfo', JSON.stringify(personalInfo));
+
+      // Files
+      if (formData.resume) {
+        applicationData.append('resume', formData.resume);
+      }
+      if (formData.portfolio) {
+        applicationData.append('portfolio', formData.portfolio);
+      }
+
+      // Validate before submission
       const validation = applicationService.validateApplicationData(applicationData);
       if (!validation.isValid) {
-        setValidationErrors(validation.errors);
-        setError(`Validation failed: ${validation.errors.join(', ')}`);
+        setError(validation.errors.join(', '));
         return;
       }
 
-      console.log('📡 Submitting application...');
-      const response = await applicationService.createApplication(applicationData);
+      console.log('Submitting application with files');
 
-      console.log('✅ Application submitted successfully!', response);
+      const response = await applicationService.createApplication(applicationData);
+      console.log('Application response:', response);
 
       navigate('/jobs', {
         state: {
@@ -336,24 +280,11 @@ const JobApplicationPage = () => {
       });
 
     } catch (err) {
-      console.error('❌ Application submission failed:', err);
       setError(err.message || 'Failed to submit application');
-
-      // Scroll to error message
-      setTimeout(() => {
-        const errorElement = document.getElementById('error-message');
-        if (errorElement) {
-          errorElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
+      console.error('Error submitting application:', err);
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const toggleDebugMode = () => {
-    setDebugMode(!debugMode);
-    console.log('🐛 Debug mode:', !debugMode ? 'enabled' : 'disabled');
   };
 
   if (loading) {
@@ -400,21 +331,8 @@ const JobApplicationPage = () => {
     );
   }
 
-  let process;
   return (
       <div className="max-w-4xl mx-auto px-4 mt-24 mb-16">
-        {/* Debug toggle for development */}
-        {process.env.NODE_ENV === 'development' && (
-            <div className="mb-4 p-2 bg-yellow-50 border border-yellow-200 rounded">
-              <button
-                  onClick={toggleDebugMode}
-                  className="text-sm text-yellow-800 hover:text-yellow-900"
-              >
-                🐛 Debug Mode: {debugMode ? 'ON' : 'OFF'}
-              </button>
-            </div>
-        )}
-
         <div className="mb-6">
           <button
               onClick={() => navigate(`/jobs/${id}`)}
@@ -775,9 +693,9 @@ const JobApplicationPage = () => {
                 </div>
               </div>
 
-              {/* Cover Letter Section */}
+              {/* Additional Information Section */}
               <div className="border-b border-gray-200 pb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Cover Letter & Additional Information</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Additional Information</h3>
 
                 {/* Cover Letter */}
                 <div className="mb-6">
@@ -847,6 +765,22 @@ const JobApplicationPage = () => {
                   />
                 </div>
 
+                {/* References */}
+                <div className="mb-6">
+                  <label htmlFor="references" className="block text-sm font-medium text-gray-700 mb-2">
+                    References (Optional)
+                  </label>
+                  <textarea
+                      id="references"
+                      name="references"
+                      rows="3"
+                      value={formData.references}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Name, Position, Company, Email, Phone (one per line)"
+                  />
+                </div>
+
                 {/* Preferences */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex items-center">
@@ -879,30 +813,9 @@ const JobApplicationPage = () => {
                 </div>
               </div>
 
-              {/* Validation Errors */}
-              {validationErrors.length > 0 && (
-                  <div className="bg-red-50 border border-red-200 rounded-md p-4">
-                    <div className="flex">
-                      <div className="flex-shrink-0">
-                        <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div className="ml-3">
-                        <h3 className="text-sm font-medium text-red-800">Validation Errors:</h3>
-                        <ul className="mt-2 text-sm text-red-700 list-disc list-inside">
-                          {validationErrors.map((error, index) => (
-                              <li key={index}>{error}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-              )}
-
               {/* Error Message */}
               {error && (
-                  <div id="error-message" className="bg-red-50 border border-red-200 rounded-md p-4">
+                  <div className="bg-red-50 border border-red-200 rounded-md p-4">
                     <div className="flex">
                       <div className="flex-shrink-0">
                         <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -928,6 +841,17 @@ const JobApplicationPage = () => {
 
                 <div className="flex space-x-4">
                   <button
+                      type="button"
+                      onClick={() => {
+                        // Save as draft functionality could be added here
+                        alert('Draft functionality coming soon!');
+                      }}
+                      className="px-6 py-3 border border-blue-300 text-blue-600 font-medium rounded-md hover:bg-blue-50"
+                  >
+                    Save as Draft
+                  </button>
+
+                  <button
                       type="submit"
                       disabled={submitting}
                       className={`px-8 py-3 ${
@@ -942,7 +866,7 @@ const JobApplicationPage = () => {
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                           </svg>
-                          Submitting Application...
+                          Submitting...
                         </>
                     ) : (
                         'Submit Application'
@@ -953,21 +877,6 @@ const JobApplicationPage = () => {
             </div>
           </form>
         </div>
-
-        {/* Debug Information (Development Only) */}
-        {debugMode && process.env.NODE_ENV === 'development' && (
-            <div className="mt-8 p-4 bg-gray-50 border rounded-lg">
-              <h3 className="font-medium text-gray-900 mb-3">🐛 Debug Information</h3>
-              <div className="text-sm text-gray-600 space-y-2">
-                <p><strong>Job ID:</strong> {id}</p>
-                <p><strong>User Role:</strong> {user?.role}</p>
-                <p><strong>Is Authenticated:</strong> {isAuthenticated ? 'Yes' : 'No'}</p>
-                <p><strong>Form Valid:</strong> {validationErrors.length === 0 ? 'Yes' : 'No'}</p>
-                <p><strong>Resume Attached:</strong> {formData.resume ? 'Yes' : 'No'}</p>
-                <p><strong>API Endpoint:</strong> /api/applications</p>
-              </div>
-            </div>
-        )}
 
         {/* Tips Section */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
