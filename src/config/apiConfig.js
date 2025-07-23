@@ -6,11 +6,13 @@ const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'https://318920b85a06.ngrok-free.app/api',
   headers: {
     'Content-Type': 'application/json',
-    // Ajouter le header pour contourner l'avertissement ngrok
-    'ngrok-skip-browser-warning': 'true'
+    // Essential header for ngrok
+    'ngrok-skip-browser-warning': 'true',
+    // Additional headers for CORS
+    'Accept': 'application/json',
   },
-  timeout: 10000, // 10 seconds timeout
-  withCredentials: true // Important pour les cookies si utilisés
+  timeout: 30000, // Increased timeout for ngrok
+  withCredentials: true // Important for cookies and auth
 });
 
 // Define all API endpoints
@@ -58,11 +60,13 @@ export const API_ENDPOINTS = {
     GET_COMPANIES: '/companies',
     GET_COMPANY: (id) => `/companies/${id}`
   },
-  // Nouvel endpoint pour tester la connexion
-  HEALTH: '/health'
+  // Test endpoints
+  HEALTH: '/health',
+  CORS_TEST: '/cors-test',
+  PING: '/ping'
 };
 
-// Add a request interceptor to add auth token to every request
+// Request interceptor
 apiClient.interceptors.request.use(
     (config) => {
       const token = localStorage.getItem('token');
@@ -70,15 +74,16 @@ apiClient.interceptors.request.use(
         config.headers['Authorization'] = `Bearer ${token}`;
       }
 
-      // Toujours ajouter le header ngrok pour éviter les avertissements
+      // Always add ngrok header
       config.headers['ngrok-skip-browser-warning'] = 'true';
 
-      // Log the request for debugging
-      const baseURL = config.baseURL || '';
-      const url = config.url || '';
-      const fullURL = url.startsWith('http') ? url : `${baseURL}${url}`;
-
-      console.log(`🚀 ${config.method?.toUpperCase()} ${fullURL}`, config.data || '');
+      // Log requests in development
+      if (import.meta.env.VITE_DEBUG_API === 'true') {
+        const baseURL = config.baseURL || '';
+        const url = config.url || '';
+        const fullURL = url.startsWith('http') ? url : `${baseURL}${url}`;
+        console.log(`🚀 ${config.method?.toUpperCase()} ${fullURL}`, config.data || '');
+      }
 
       return config;
     },
@@ -88,22 +93,23 @@ apiClient.interceptors.request.use(
     }
 );
 
-// Add a response interceptor to handle common errors
+// Response interceptor
 apiClient.interceptors.response.use(
     (response) => {
-      // Log successful responses
-      const baseURL = response.config.baseURL || '';
-      const url = response.config.url || '';
-      const fullURL = url.startsWith('http') ? url : `${baseURL}${url}`;
-
-      console.log(`✅ ${response.config.method?.toUpperCase()} ${fullURL}`, response.data);
+      // Log successful responses in development
+      if (import.meta.env.VITE_DEBUG_API === 'true') {
+        const baseURL = response.config.baseURL || '';
+        const url = response.config.url || '';
+        const fullURL = url.startsWith('http') ? url : `${baseURL}${url}`;
+        console.log(`✅ ${response.config.method?.toUpperCase()} ${fullURL}`, response.data);
+      }
       return response;
     },
     async (error) => {
       const originalRequest = error.config;
 
-      // Log error responses avec plus de détails
-      if (error.config) {
+      // Enhanced error logging
+      if (error.config && import.meta.env.VITE_DEBUG_API === 'true') {
         const baseURL = error.config.baseURL || '';
         const url = error.config.url || '';
         const fullURL = url.startsWith('http') ? url : `${baseURL}${url}`;
@@ -112,16 +118,29 @@ apiClient.interceptors.response.use(
           status: error.response?.status,
           statusText: error.response?.statusText,
           data: error.response?.data,
-          message: error.message
+          message: error.message,
+          corsHeaders: {
+            'Access-Control-Allow-Origin': error.response?.headers?.['access-control-allow-origin'],
+            'Access-Control-Allow-Credentials': error.response?.headers?.['access-control-allow-credentials']
+          }
         });
       }
 
-      // Handle network errors (important pour ngrok)
+      // Handle network errors (common with ngrok)
       if (error.code === 'NETWORK_ERROR' || error.message === 'Network Error') {
-        console.error('🌐 Network Error - Vérifiez que ngrok fonctionne et que l\'URL est correcte');
+        console.error('🌐 Network Error - Check ngrok connection');
         return Promise.reject({
           ...error,
-          message: 'Erreur de connexion au serveur. Vérifiez que le backend est accessible.'
+          message: 'Connection failed. Please check if the backend server is running.'
+        });
+      }
+
+      // Handle CORS errors specifically
+      if (error.message?.includes('CORS') || error.response?.status === 0) {
+        console.error('🚫 CORS Error detected');
+        return Promise.reject({
+          ...error,
+          message: 'CORS error. Please check server configuration.'
         });
       }
 
@@ -154,10 +173,10 @@ export const handleApiError = (error) => {
       errors: data.errors || []
     };
   } else if (error.request) {
-    // Request was made but no response received
+    // Request was made but no response received (likely CORS or network)
     return {
       status: 0,
-      message: 'Network error - please check your connection and ensure the backend is running',
+      message: 'Network error - please check your connection and backend server',
       errors: []
     };
   } else {
@@ -170,15 +189,40 @@ export const handleApiError = (error) => {
   }
 };
 
-// Helper function to test API connection
+// Test API connection
 export const testApiConnection = async () => {
   try {
     console.log('🔍 Testing API connection...');
-    const response = await apiClient.get(API_ENDPOINTS.HEALTH);
+    const response = await apiClient.get(API_ENDPOINTS.CORS_TEST);
     console.log('✅ API Connection successful!', response.data);
     return { success: true, data: response.data };
   } catch (error) {
     console.error('❌ API Connection failed:', error);
+    const errorInfo = handleApiError(error);
+    return { success: false, error: errorInfo };
+  }
+};
+
+// Test CORS specifically
+export const testCORS = async () => {
+  try {
+    console.log('🧪 Testing CORS...');
+
+    // First try a simple ping
+    const pingResponse = await apiClient.get(API_ENDPOINTS.PING);
+    console.log('✅ Ping successful:', pingResponse.data);
+
+    // Then try the CORS test endpoint
+    const corsResponse = await apiClient.get(API_ENDPOINTS.CORS_TEST);
+    console.log('✅ CORS test successful:', corsResponse.data);
+
+    return {
+      success: true,
+      ping: pingResponse.data,
+      cors: corsResponse.data
+    };
+  } catch (error) {
+    console.error('❌ CORS test failed:', error);
     const errorInfo = handleApiError(error);
     return { success: false, error: errorInfo };
   }
@@ -189,7 +233,7 @@ export const getApiBaseUrl = () => {
   return apiClient.defaults.baseURL;
 };
 
-// Helper to update base URL (utile si l'URL ngrok change)
+// Helper to update base URL (useful when ngrok URL changes)
 export const updateApiBaseUrl = (newBaseUrl) => {
   apiClient.defaults.baseURL = newBaseUrl;
   console.log(`🔄 API Base URL updated to: ${newBaseUrl}`);
