@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Create an axios instance with common configuration
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://318920b85a06.ngrok-free.app/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://318920b85a06.ngrok-free.app',
   headers: {
     'Content-Type': 'application/json',
     // Essential header for ngrok
