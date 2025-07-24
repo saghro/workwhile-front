@@ -10,30 +10,22 @@ const JobApplicationPage = () => {
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    // Personal Information
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
-
-    // Professional Information
     coverLetter: '',
     expectedSalary: '',
+    currency: 'USD', // Changed default to USD (MAD not supported by server)
     availableFrom: '',
     currentPosition: '',
     totalExperience: '',
-
-    // Education
     education: '',
     university: '',
     graduationYear: '',
-
-    // Skills and Files
     skills: '',
     resume: null,
     portfolio: null,
-
-    // Additional
     linkedin: '',
     website: '',
     references: '',
@@ -191,6 +183,25 @@ const JobApplicationPage = () => {
       return false;
     }
 
+    // Validate totalExperience
+    if (formData.totalExperience && isNaN(formData.totalExperience)) {
+      setError('Total experience must be a valid number');
+      return false;
+    }
+
+    // Validate expectedSalary
+    if (formData.expectedSalary && isNaN(formData.expectedSalary)) {
+      setError('Expected salary must be a valid number');
+      return false;
+    }
+
+    // Validate currency
+    const validCurrencies = ['USD', 'EUR', 'GBP']; // Removed MAD (not supported by server)
+    if (formData.expectedSalary && !validCurrencies.includes(formData.currency)) {
+      setError(`Currency must be one of: ${validCurrencies.join(', ')}`);
+      return false;
+    }
+
     return true;
   };
 
@@ -222,22 +233,29 @@ const JobApplicationPage = () => {
       applicationData.append('jobId', id);
       applicationData.append('coverLetter', formData.coverLetter.trim());
 
-      // Optional fields
+      // Expected salary as an object
       if (formData.expectedSalary) {
-        applicationData.append('expectedSalary', Number(formData.expectedSalary));
+        const salaryData = {
+          amount: Number(formData.expectedSalary),
+          currency: formData.currency || 'USD' // Default to USD
+        };
+        applicationData.append('expectedSalary', JSON.stringify(salaryData));
       }
+
       if (formData.availableFrom) {
         applicationData.append('availableFrom', formData.availableFrom);
       }
 
-      // Personal information as JSON string
+      // Personal information as JSON string, adjusted for experience.totalYears
       const personalInfo = {
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
         currentPosition: formData.currentPosition.trim(),
-        totalExperience: formData.totalExperience,
+        experience: {
+          totalYears: Number(formData.totalExperience) || 0 // Nested under experience
+        },
         education: formData.education,
         university: formData.university.trim(),
         graduationYear: formData.graduationYear,
@@ -260,6 +278,12 @@ const JobApplicationPage = () => {
         applicationData.append('portfolio', formData.portfolio);
       }
 
+      // Log FormData for debugging
+      console.log('FormData contents:');
+      for (const [key, value] of applicationData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+
       // Validate before submission
       const validation = applicationService.validateApplicationData(applicationData);
       if (!validation.isValid) {
@@ -278,10 +302,10 @@ const JobApplicationPage = () => {
           type: 'success'
         }
       });
-
     } catch (err) {
-      setError(err.message || 'Failed to submit application');
-      console.error('Error submitting application:', err);
+      const errorMessage = err.response?.data?.message || err.message || 'Failed to submit application';
+      console.error('Error submitting application:', err.response?.data || err);
+      setError(errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -350,7 +374,6 @@ const JobApplicationPage = () => {
             <h1 className="text-3xl font-bold text-gray-900">Apply for {job.title}</h1>
             <p className="mt-2 text-gray-600">{job.company?.name || 'Company'}</p>
 
-            {/* Job Summary */}
             <div className="mt-4 p-4 bg-gray-50 rounded-lg">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div>
@@ -472,17 +495,17 @@ const JobApplicationPage = () => {
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="">Select experience</option>
-                      <option value="0-1">0-1 year</option>
-                      <option value="1-3">1-3 years</option>
-                      <option value="3-5">3-5 years</option>
-                      <option value="5-8">5-8 years</option>
-                      <option value="8+">8+ years</option>
+                      <option value="1">0-1 years</option>
+                      <option value="3">1-3 years</option>
+                      <option value="5">3-5 years</option>
+                      <option value="8">5-8 years</option>
+                      <option value="10">8+ years</option>
                     </select>
                   </div>
 
                   <div>
                     <label htmlFor="expectedSalary" className="block text-sm font-medium text-gray-700 mb-2">
-                      Expected Salary (MAD/month)
+                      Expected Salary (per month)
                     </label>
                     <input
                         type="number"
@@ -495,6 +518,24 @@ const JobApplicationPage = () => {
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         placeholder="e.g., 15000"
                     />
+                  </div>
+
+                  <div>
+                    <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-2">
+                      Currency
+                    </label>
+                    <select
+                        id="currency"
+                        name="currency"
+                        value={formData.currency}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="USD">USD</option>
+                      <option value="EUR">EUR</option>
+                      <option value="GBP">GBP</option>
+                      {/* Removed MAD as it’s not supported by the server */}
+                    </select>
                   </div>
 
                   <div>
@@ -513,7 +554,6 @@ const JobApplicationPage = () => {
                   </div>
                 </div>
 
-                {/* Skills */}
                 <div className="mt-6">
                   <label htmlFor="skills" className="block text-sm font-medium text-gray-700 mb-2">
                     Skills (comma separated)
@@ -593,7 +633,6 @@ const JobApplicationPage = () => {
               <div className="border-b border-gray-200 pb-8">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Documents</h3>
 
-                {/* Resume Upload */}
                 <div className="mb-6">
                   <label htmlFor="resume" className="block text-sm font-medium text-gray-700 mb-2">
                     Resume/CV <span className="text-red-500">*</span>
@@ -643,7 +682,6 @@ const JobApplicationPage = () => {
                   )}
                 </div>
 
-                {/* Portfolio Upload */}
                 <div>
                   <label htmlFor="portfolio" className="block text-sm font-medium text-gray-700 mb-2">
                     Portfolio (Optional)
@@ -697,7 +735,6 @@ const JobApplicationPage = () => {
               <div className="border-b border-gray-200 pb-8">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Additional Information</h3>
 
-                {/* Cover Letter */}
                 <div className="mb-6">
                   <label htmlFor="coverLetter" className="block text-sm font-medium text-gray-700 mb-2">
                     Cover Letter <span className="text-gray-500">(Recommended - min. 50 characters)</span>
@@ -716,7 +753,6 @@ const JobApplicationPage = () => {
                   </p>
                 </div>
 
-                {/* Links */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
                     <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700 mb-2">
@@ -727,7 +763,7 @@ const JobApplicationPage = () => {
                         id="linkedin"
                         name="linkedin"
                         value={formData.linkedin}
-                        onChange={handleInputChange}
+                        onChange={handleInputChange} // Fixed typo: was handle mágicoInputChange
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         placeholder="https://linkedin.com/in/yourprofile"
                     />
@@ -749,7 +785,6 @@ const JobApplicationPage = () => {
                   </div>
                 </div>
 
-                {/* Motivation */}
                 <div className="mb-6">
                   <label htmlFor="motivation" className="block text-sm font-medium text-gray-700 mb-2">
                     Why do you want to work for this company?
@@ -765,7 +800,6 @@ const JobApplicationPage = () => {
                   />
                 </div>
 
-                {/* References */}
                 <div className="mb-6">
                   <label htmlFor="references" className="block text-sm font-medium text-gray-700 mb-2">
                     References (Optional)
@@ -781,7 +815,6 @@ const JobApplicationPage = () => {
                   />
                 </div>
 
-                {/* Preferences */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex items-center">
                     <input
@@ -813,7 +846,6 @@ const JobApplicationPage = () => {
                 </div>
               </div>
 
-              {/* Error Message */}
               {error && (
                   <div className="bg-red-50 border border-red-200 rounded-md p-4">
                     <div className="flex">
@@ -829,7 +861,6 @@ const JobApplicationPage = () => {
                   </div>
               )}
 
-              {/* Submit Section */}
               <div className="flex justify-between items-center pt-8">
                 <button
                     type="button"
@@ -843,7 +874,6 @@ const JobApplicationPage = () => {
                   <button
                       type="button"
                       onClick={() => {
-                        // Save as draft functionality could be added here
                         alert('Draft functionality coming soon!');
                       }}
                       className="px-6 py-3 border border-blue-300 text-blue-600 font-medium rounded-md hover:bg-blue-50"
@@ -878,7 +908,6 @@ const JobApplicationPage = () => {
           </form>
         </div>
 
-        {/* Tips Section */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
             <h3 className="font-medium text-blue-900 mb-3 flex items-center">

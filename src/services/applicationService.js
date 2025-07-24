@@ -1,4 +1,3 @@
-// src/services/applicationService.js
 import apiClient, { API_ENDPOINTS, handleApiError } from '../config/apiConfig';
 
 const applicationService = {
@@ -166,7 +165,6 @@ const applicationService = {
     try {
       console.log('Fetching application by ID:', applicationId);
 
-      // This would require a new endpoint, for now we'll get from my applications
       const applications = await applicationService.getMyApplications(1, 1000);
       return applications.find(app => app._id === applicationId) || null;
     } catch (error) {
@@ -233,7 +231,6 @@ const applicationService = {
         return [];
       }
 
-      // Create a timeline based on application data
       const timeline = [
         {
           status: 'submitted',
@@ -265,6 +262,7 @@ const applicationService = {
    */
   validateApplicationData: (applicationData) => {
     const errors = [];
+    console.log('Validating application data:', applicationData);
 
     // Required fields validation
     if (!applicationData.get('jobId')) {
@@ -297,6 +295,11 @@ const applicationService = {
         if (!personalInfo.phone?.trim()) {
           errors.push('Phone number is required');
         }
+
+        // Validate totalExperience as a number
+        if (personalInfo.totalExperience && isNaN(personalInfo.totalExperience)) {
+          errors.push('Total experience must be a valid number');
+        }
         // eslint-disable-next-line no-unused-vars
       } catch (e) {
         errors.push('Invalid personal information format');
@@ -311,6 +314,26 @@ const applicationService = {
     if (coverLetter && coverLetter.length < 50) {
       errors.push('Cover letter should be at least 50 characters long');
     }
+
+    // Validate expectedSalary
+    if (applicationData.get('expectedSalary')) {
+      try {
+        const expectedSalary = JSON.parse(applicationData.get('expectedSalary'));
+        if (expectedSalary.amount && isNaN(expectedSalary.amount)) {
+          errors.push('Expected salary amount must be a valid number');
+        }
+        // Define valid currencies based on server requirements
+        const validCurrencies = ['USD', 'EUR', 'GBP', 'MAD']; // Adjust based on server enum
+        if (expectedSalary.currency && !validCurrencies.includes(expectedSalary.currency)) {
+          errors.push(`Currency must be one of: ${validCurrencies.join(', ')}`);
+        }
+        // eslint-disable-next-line no-unused-vars
+      } catch (e) {
+        errors.push('Invalid expected salary format');
+      }
+    }
+
+    console.log('Validation errors:', errors);
 
     return {
       isValid: errors.length === 0,
