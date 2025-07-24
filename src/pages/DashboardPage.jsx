@@ -1044,7 +1044,7 @@ const QuickLinks = () => (
                 Manage Jobs
             </Link>
             <Link to="/admin/companies" className="block text-blue-600 hover:text-blue-800 text-sm">
-                Manage Companies
+                Manage Companie
             </Link>
         </div>
     </div>
