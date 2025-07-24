@@ -2,7 +2,7 @@
 ## WorkWhile - Find Your Perfect Job
 
 <p align="center">
-    <img src="public/workwhile.png" alt="WorkWhile Logo" width="250"/>
+    <img src="public/find-logo.png" alt="WorkWhile Logo" width="250"/>
 </p>
 
 ### About WorkWhile
