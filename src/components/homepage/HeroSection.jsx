@@ -1,10 +1,8 @@
-
-// HeroSection.jsx - Version Française
 import { useState, useEffect, forwardRef } from 'react';
 import { Search, ChevronDown } from 'lucide-react';
-import workwhileLogo from '../../../public/logo_job.png';
+import workwhileLogo from '../../../public/find-logo.png';
 
-// URLs des logos d'entreprises
+// Company logo URLs
 const partnerLogos = [
   { name: "Google", logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" },
   { name: "Microsoft", logo: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31" },
@@ -13,12 +11,12 @@ const partnerLogos = [
     name: "Apple",
     logo: "https://www.apple.com/ac/globalnav/7/en_US/images/be15095f-5a20-57d0-ad14-cf4c638e223a/globalnav_apple_image__b5er5ngrzxqq_large.svg",
     darkBackground: true,
-    scale: 3
+    scale: 3 // Apple logo will be 3x its normal size
   },
   { name: "Meta", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Meta_Platforms_Inc._logo.svg/800px-Meta_Platforms_Inc._logo.svg.png" },
   { name: "Netflix", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/2560px-Netflix_2015_logo.svg.png" },
   { name: "Uber", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Uber_logo_2018.svg/2560px-Uber_logo_2018.svg.png" },
-  { name: "LinkedIn", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/LinkedIn_Logo.svg/2560px-LinkedIn_Logo.svg.png" },
+  { name: "LinkedIn", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/LinkedIn_Logo.svg/2560px-LinkedIn_Logo.svg.png" }, // Replaced Airbnb
   { name: "Spotify", logo: "https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_Green.png" },
   { name: "Tesla", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Tesla_logo.png/800px-Tesla_logo.png" },
 ];
@@ -39,23 +37,23 @@ const HeroSection = forwardRef((props, ref) => {
           ref={ref}
           className="min-h-screen flex flex-col bg-white items-center justify-center px-4 relative overflow-hidden"
       >
-        {/* Animation d'arrière-plan */}
+        {/* Background animation */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute w-64 h-64 rounded-full bg-blue-300 opacity-20 blur-3xl top-1/4 left-1/4 animate-pulse" style={{ backgroundColor: '#3c78e6' }}></div>
           <div className="absolute w-72 h-72 rounded-full bg-yellow-300 opacity-20 blur-3xl bottom-1/4 right-1/4 animate-pulse" style={{ backgroundColor: '#EDC418' }}></div>
         </div>
 
-        {/* Logo avec halo circulaire */}
+        {/* Logo with circular hue */}
         <div className="relative mb-8 z-10">
           <div className="absolute inset-0 rounded-full opacity-10 blur-3xl transform scale-150" style={{ backgroundColor: '#3c78e6' }}></div>
           <div className="absolute inset-0 rounded-full opacity-10 blur-3xl transform scale-125 translate-x-6" style={{ backgroundColor: '#EDC418' }}></div>
 
           <div className="relative p-6 flex items-center justify-center">
-            <img src={workwhileLogo} alt="Logo Workwhile" className="h-50 sm:h-28 md:h-100 object-contain" />
+            <img src={workwhileLogo} alt="Workwhile Logo" className="h-40 sm:h-30 md:h-80 object-contain" />
           </div>
         </div>
 
-        {/* Logos partenaires en rotation */}
+        {/* Rotating partner logos */}
         <div className="relative w-full md:w-4/5 lg:w-3/4 xl:w-2/3 mx-auto h-16 mb-10 overflow-hidden">
           <div
               className="absolute w-full whitespace-nowrap"
@@ -69,7 +67,7 @@ const HeroSection = forwardRef((props, ref) => {
                   >
                     <img
                         src={partner.logo}
-                        alt={`Logo ${partner.name}`}
+                        alt={`${partner.name} logo`}
                         className="max-h-full max-w-full object-contain"
                         style={partner.scale ? { transform: `scale(${partner.scale})` } : {}}
                     />
@@ -79,17 +77,17 @@ const HeroSection = forwardRef((props, ref) => {
           </div>
         </div>
 
-        {/* Slogan */}
+        {/* Tagline */}
         <h1 className="text-xl sm:text-2xl md:text-3xl text-gray-800 font-light max-w-2xl text-center mb-8 z-10">
-          Façonnez votre avenir avec des conseils d'experts et des opportunités conçues pour les jeunes professionnels
+          Shape your future with expert guidance and opportunities crafted for young professionals
         </h1>
 
-        {/* Barre de recherche */}
+        {/* Search bar */}
         <div className="w-full max-w-2xl relative z-10">
           <div className="relative">
             <input
                 type="text"
-                placeholder="Trouvez votre avenir maintenant"
+                placeholder="Find your future now"
                 className="w-full px-6 py-4 pr-12 text-lg rounded-full shadow-lg border border-gray-200 focus:outline-none focus:ring-2 focus:border-transparent bg-white"
                 style={{ focusRingColor: '#3c78e6' }}
             />
@@ -101,16 +99,16 @@ const HeroSection = forwardRef((props, ref) => {
           </div>
         </div>
 
-        {/* Catégories d'emplois */}
+        {/* Job categories */}
         <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-3xl z-10">
-          {['Technologie', 'Santé', 'Finance', 'Éducation', 'Marketing', 'Design', 'Ingénierie', 'Service Client'].map((category, index) => (
+          {['Technology', 'Healthcare', 'Finance', 'Education', 'Marketing', 'Design', 'Engineering', 'Customer Service'].map((category, index) => (
               <div key={index} className="bg-white rounded-xl px-4 py-3 text-center shadow-sm hover:shadow-md transition cursor-pointer border border-gray-100">
                 <span className="text-gray-700 font-medium">{category}</span>
               </div>
           ))}
         </div>
 
-        {/* Indicateur de défilement */}
+        {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
           <ChevronDown size={32} style={{ color: '#3c78e6' }} />
         </div>

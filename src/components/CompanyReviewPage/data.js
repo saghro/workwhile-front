@@ -16,80 +16,80 @@ export const reviewsData = [
     id: 1,
     company: "Google",
     rating: 4,
-    position: "Ingénieur Logiciel",
-    comment: "Excellent équilibre vie professionnelle-privée et environnement collaboratif. Le management est bienveillant et il y a beaucoup d'opportunités d'évolution.",
-    date: "il y a 2 jours",
-    pros: "Excellents avantages, bons collègues, opportunités d'apprentissage",
-    cons: "Peut être bureaucratique parfois, environnement compétitif"
+    position: "Software Engineer",
+    comment: "Great work-life balance and collaborative environment. Management is supportive and there are plenty of growth opportunities.",
+    date: "2 days ago",
+    pros: "Excellent benefits, good colleagues, learning opportunities",
+    cons: "Can be bureaucratic at times, competitive environment"
   },
   {
     id: 2,
     company: "Microsoft",
     rating: 3,
-    position: "Chef de Produit",
-    comment: "Avantages corrects mais la charge de travail peut être écrasante par moments. L'équipe est sympa mais le management pourrait améliorer la communication.",
-    date: "il y a 1 semaine",
-    pros: "Bon salaire, problèmes intéressants à résoudre",
-    cons: "L'équilibre vie pro-privée pourrait être meilleur, cycle de promotion lent"
+    position: "Product Manager",
+    comment: "Decent benefits but the workload can be overwhelming at times. The team is friendly but management could improve communication.",
+    date: "1 week ago",
+    pros: "Good salary, interesting problems to solve",
+    cons: "Work-life balance could be better, slow promotion cycle"
   },
   {
     id: 3,
     company: "Amazon",
     rating: 2,
-    position: "Analyste de Données",
-    comment: "Environnement haute pression avec des délais agressifs. On apprend beaucoup mais le burn-out est fréquent. Non recommandé pour une évolution de carrière à long terme.",
-    date: "il y a 3 jours",
-    pros: "Excellent sur le CV, projets stimulants",
-    cons: "Mauvais équilibre vie pro-privée, fort taux de rotation"
+    position: "Data Analyst",
+    comment: "High-pressure environment with aggressive deadlines. You learn a lot but burnout is common. Not recommended for long-term career growth.",
+    date: "3 days ago",
+    pros: "Looks great on resume, challenging projects",
+    cons: "Poor work-life balance, high turnover rate"
   },
   {
     id: 4,
     company: "Apple",
     rating: 5,
-    position: "Designer UX",
-    comment: "J'adore absolument travailler ici ! Culture innovante, excellents avantages, et le management se soucie vraiment du bien-être des employés.",
-    date: "il y a 2 semaines",
-    pros: "Liberté créative, excellente rémunération, prestigieux",
-    cons: "La culture du secret peut être frustrante"
+    position: "UX Designer",
+    comment: "Absolutely love working here! Innovative culture, great benefits, and management truly cares about employee wellbeing.",
+    date: "2 weeks ago",
+    pros: "Creative freedom, excellent compensation, prestigious",
+    cons: "Secrecy culture can be frustrating"
   },
   {
     id: 5,
     company: "Meta",
     rating: 4,
-    position: "Ingénieur Frontend",
-    comment: "Travail stimulant avec des technologies de pointe. Excellents avantages et rémunération, mais parfois la direction change trop rapidement.",
-    date: "il y a 5 jours",
-    pros: "Technologies de pointe, rémunération généreuse",
-    cons: "Les pivots stratégiques peuvent être perturbants"
+    position: "Frontend Engineer",
+    comment: "Challenging work with cutting-edge tech. Great perks and compensation, but sometimes the direction shifts too rapidly.",
+    date: "5 days ago",
+    pros: "Leading-edge tech, generous compensation",
+    cons: "Strategic pivots can be disruptive"
   },
   {
     id: 6,
     company: "Netflix",
     rating: 4,
-    position: "Stratège de Contenu",
-    comment: "Culture de responsabilisation avec une rémunération de premier plan. Pas pour tout le monde, mais gratifiant si vous excellez dans des environnements autonomes.",
-    date: "il y a 1 mois",
-    pros: "Liberté et responsabilité, excellent salaire",
-    cons: "Les attentes de performance sont très élevées"
+    position: "Content Strategist",
+    comment: "High accountability culture with top-tier compensation. Not for everyone, but rewarding if you thrive in autonomous environments.",
+    date: "1 month ago",
+    pros: "Freedom and responsibility, excellent pay",
+    cons: "Performance expectations are very high"
   },
   {
     id: 7,
     company: "Uber",
     rating: 3,
-    position: "Responsable des Opérations",
-    comment: "Rythme rapide avec des opportunités d'avoir un impact. La culture d'entreprise s'est améliorée, mais travaille encore sur les difficultés de croissance.",
-    date: "il y a 3 semaines",
-    pros: "Environnement dynamique, bon pour l'évolution de carrière",
-    cons: "Parfois chaotique, les priorités changent fréquemment"
+    position: "Operations Manager",
+    comment: "Fast-paced with opportunities to make an impact. Company culture has improved, but still working through growing pains.",
+    date: "3 weeks ago",
+    pros: "Dynamic environment, good for career growth",
+    cons: "Sometimes chaotic, priorities change frequently"
   },
   {
     id: 8,
     company: "LinkedIn",
     rating: 5,
-    position: "Représentant Commercial",
-    comment: "Culture d'entreprise fantastique qui vit vraiment ses valeurs. Excellent équilibre vie pro-privée et management bienveillant.",
-    date: "il y a 2 jours",
-    pros: "Culture bienveillante, travail porteur de sens",
-    cons: "Peut être lent à innover dans certains domaines"
+    position: "Sales Representative",
+    comment: "Fantastic company culture that truly lives its values. Great work-life balance and supportive management.",
+    date: "2 days ago",
+    pros: "Supportive culture, meaningful work",
+    cons: "Can be slow to innovate in some areas"
   }
 ];

@@ -1,4 +1,3 @@
-// StatisticsSection.jsx - Version Française
 import { forwardRef } from 'react';
 
 const StatisticsSection = forwardRef(({ isVisible }, ref) => {
@@ -8,7 +7,7 @@ const StatisticsSection = forwardRef(({ isVisible }, ref) => {
             className="py-20 relative overflow-hidden"
             style={{ backgroundColor: '#3c78e6' }}
         >
-            {/* Animation d'Arrière-plan */}
+            {/* Background Animation */}
             <div className="absolute inset-0">
                 <div className="absolute top-0 left-0 w-full h-full opacity-10">
                     <div className="absolute w-64 h-64 rounded-full bg-white top-1/4 left-1/4 animate-figure8-1"></div>
@@ -20,24 +19,24 @@ const StatisticsSection = forwardRef(({ isVisible }, ref) => {
                 <div className={`grid grid-cols-2 md:grid-cols-4 gap-8 text-center transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
                     <div>
                         <div className="text-4xl md:text-5xl font-bold text-white mb-2">87%</div>
-                        <p className="text-blue-100">Taux d'Emploi</p>
+                        <p className="text-blue-100">Employment Rate</p>
                     </div>
                     <div>
                         <div className="text-4xl md:text-5xl font-bold text-white mb-2">10K+</div>
-                        <p className="text-blue-100">Opportunités de Carrière</p>
+                        <p className="text-blue-100">Career Opportunities</p>
                     </div>
                     <div>
                         <div className="text-4xl md:text-5xl font-bold text-white mb-2">2.5K</div>
-                        <p className="text-blue-100">Réseau de Mentors</p>
+                        <p className="text-blue-100">Mentor Network</p>
                     </div>
                     <div>
                         <div className="text-4xl md:text-5xl font-bold text-white mb-2">92%</div>
-                        <p className="text-blue-100">Taux de Satisfaction</p>
+                        <p className="text-blue-100">Satisfaction Rate</p>
                     </div>
                 </div>
             </div>
 
-            {/* Ajouter les keyframes pour les animations en forme de 8 */}
+            {/* Add keyframes for figure-8 animations */}
             <style jsx>{`
                 @keyframes figure8-1 {
                     0%, 100% { transform: translate(0, 0); }
@@ -64,5 +63,4 @@ const StatisticsSection = forwardRef(({ isVisible }, ref) => {
         </section>
     );
 });
-
 export default StatisticsSection;
