@@ -1,13 +1,13 @@
 
-## WorkWhile - Find Your Perfect Job
+## FindYourJob - Find Your Perfect Job
 
 <p align="center">
     <img src="public/find-logo.png" alt="WorkWhile Logo" width="250"/>
 </p>
 
-### About WorkWhile
+### About FindYourJob
 
-WorkWhile is an innovative job seeking platform designed to connect talented professionals with their ideal employment opportunities. Our streamlined interface and powerful matching algorithms ensure that job seekers find positions that align with their skills, values, and career goals.
+FindYourJob is an innovative job seeking platform designed to connect talented professionals with their ideal employment opportunities. Our streamlined interface and powerful matching algorithms ensure that job seekers find positions that align with their skills, values, and career goals.
 
 ### Key Features
 
@@ -31,7 +31,7 @@ WorkWhile is an innovative job seeking platform designed to connect talented pro
 
 ### Contributing
 
-We welcome contributions to WorkWhile! Please see our contributing guidelines for more information.
+We welcome contributions to FindYourJob! Please see our contributing guidelines for more information.
 
 
 ### License
