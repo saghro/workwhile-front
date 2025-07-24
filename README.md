@@ -33,10 +33,6 @@ WorkWhile is an innovative job seeking platform designed to connect talented pro
 
 We welcome contributions to WorkWhile! Please see our contributing guidelines for more information.
 
-<p align="center">
-    <img src="public/wwlogo.png" alt="WorkWhile Icon" width="50"/>
-</p>
 
 ### License
 
-This project is licensed under the [MIT License](LICENSE).
